@@ -1,0 +1,18 @@
+name: one_context
+description: Dialogs, Overlays and Navigations without BuildContext
+version: 0.1.0
+author: Emanuel Braz - fastencoding@gmail.com
+homepage: https://github.com/emanuel-braz/one_context.git
+
+environment:
+  sdk: ">=2.1.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+    
+flutter:
