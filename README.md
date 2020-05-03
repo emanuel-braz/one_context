@@ -6,7 +6,7 @@
 > #### **One Context to rule them all**
 
 
-## Show Dialogs, Overlays and Navigate without BuildContext.
+## OneContext provides a simple way to deal with Dialogs, Overlays and Navigations with no need of BuildContext.
 
 ![demo](https://user-images.githubusercontent.com/3827308/80896454-aea8d400-8cc4-11ea-9c7b-39002628fd0e.png)
     
@@ -187,7 +187,7 @@ return MaterialApp(
 #### Add dependency
 ```yaml
   dependencies:
-    one_context: ^0.1.0
+    one_context: ^0.1.1
 ```
 
 
