@@ -21,15 +21,18 @@ class OneContext with NavigatorController, OverlayController, DialogController {
     return _context;
   }
 
-  /// Don't touch this, it will be automatically get configured :)
   set context(newContext) => _context = newContext;
+
+  MediaQueryData get mediaQuery => MediaQuery.of(context);
+  ThemeData get theme => Theme.of(context);
+  TextTheme get textTheme => theme.textTheme;
+  FocusScopeNode get focusScope => FocusScope.of(context);
 
   OneContext._private();
   static OneContext instance = OneContext._private();
   factory OneContext() => instance;
 
-  /// Don't touch this, it will be automatically get configured :)
-  /// Register all necessary callbacks from main widget
+  /// Register all necessary callbacks from main widget, automatically
   void registerDialogCallback(
       {DialogFuture showDialog,
       DialogModalSheet showModalBottomSheet,

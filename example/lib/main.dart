@@ -73,7 +73,7 @@ class _MyHomePageState extends State<MyHomePage>
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              SizedBox(height: 100),
+              SizedBox(height: 20),
               RaisedButton(
                 child: Text('Show SnackBar'),
                 onPressed: () {
@@ -258,7 +258,7 @@ class _MyHomePageState extends State<MyHomePage>
                 },
               ),
               RaisedButton(
-                child: Text('Add an generic overlay'),
+                child: Text('Add a generic overlay'),
                 onPressed: () {
                   showTipsOnScreen('OneContext().addOverlay(builder)');
                   String overId = UniqueKey().toString();
@@ -311,9 +311,36 @@ class _MyHomePageState extends State<MyHomePage>
                   print('$result from OneContext().pushNamed()');
                 },
               ),
+              RaisedButton(
+                child: Text('Show MediaQuery info'),
+                onPressed: () async {
+                  MediaQueryData mediaQuery = OneContext().mediaQuery;
+                  String info =
+                      'orientation: ${mediaQuery.orientation.toString()}\n'
+                      'devicePixelRatio: ${mediaQuery.devicePixelRatio}\n'
+                      'platformBrightness: ${mediaQuery.platformBrightness.toString()}\n'
+                      'width: ${mediaQuery.size.width}\n'
+                      'height: ${mediaQuery.size.height}\n'
+                      'textScaleFactor: ${mediaQuery.textScaleFactor}';
+                  print(info);
+                  showTipsOnScreen(info, size: 200, seconds: 5);
+                },
+              ),
+              RaisedButton(
+                child: Text('Show Theme info'),
+                onPressed: () async {
+                  ThemeData theme = OneContext().theme;
+                  String info = 'platform: ${theme.platform}\n'
+                      'primaryColor: ${theme.primaryColor}\n'
+                      'accentColor: ${theme.accentColor}\n'
+                      'title.color: ${theme.textTheme.title.color}';
+                  print(info);
+                  showTipsOnScreen(info, size: 200, seconds: 5);
+                },
+              ),
               SizedBox(height: 24),
               Text(
-                'Dialogs, Overlays and Navigations without BuildContext.',
+                'Dialogs, Overlays and Navigations with no need BuildContext.',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 22),
               )
@@ -346,7 +373,7 @@ class SecondPage extends StatelessWidget {
 }
 
 // Dont need context, so features can be create in any place ;)
-void showTipsOnScreen(String text) {
+void showTipsOnScreen(String text, {double size, int seconds}) {
   String id = UniqueKey().toString();
   OneContext().addOverlay(
     overlayId: id,
@@ -364,9 +391,10 @@ void showTipsOnScreen(String text) {
             ),
           ),
           color: Colors.red,
-          height: 100,
+          height: size ?? 100,
           width: double.infinity),
     ),
   );
-  Future.delayed(Duration(seconds: 2), () => OneContext().removeOverlay(id));
+  Future.delayed(
+      Duration(seconds: seconds ?? 2), () => OneContext().removeOverlay(id));
 }

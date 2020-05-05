@@ -1,17 +1,16 @@
 [![Pub Version](https://img.shields.io/pub/v/one_context?color=%2302569B&label=pub&logo=flutter)](https://pub.dev/packages/one_context) ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
 
 
-![demo](https://user-images.githubusercontent.com/3827308/80895558-a351aa80-8cbc-11ea-87ce-11f74c899767.png)
+![logo](https://user-images.githubusercontent.com/3827308/80895558-a351aa80-8cbc-11ea-87ce-11f74c899767.png)
 
 > #### **One Context to rule them all**
 
 
-## OneContext provides a simple way to deal with Dialogs, Overlays and Navigations with no need of BuildContext.
+## OneContext provides a simple way to deal with Dialogs, Overlays, Navigations, Theme* and MediaQuery* with no need of BuildContext.
 
-![demo](https://user-images.githubusercontent.com/3827308/80896454-aea8d400-8cc4-11ea-9c7b-39002628fd0e.png)
-    
+![demo](https://user-images.githubusercontent.com/3827308/81033427-06347480-8e6a-11ea-8d36-081bfbdd5bc6.png)
 
-> BuildContext always is needed (in some cases we need to choose carefully the specific one to make things work as expected), but, to global things, like dialogs, we shoudn't have to worry about (it's makes sense in my mind haha) and because of that, it is being encapsulated by the package, to we don't have to worry about it. 🎯
+> BuildContext always is needed (in some cases we need to choose carefully the specific one to make things work as expected), but, to global things, like dialogs, it can be reached by OneContext package. 🎯
 
 
 ## 🎮  Let's start 
@@ -39,7 +38,10 @@
     OneContext().addOverlay(...);
 ```
 
-
+#### OneContext is:
+* Fast (O(1))
+* Easy to learn/use
+* It use same native function names from Flutter, to keep it simple and intuitive ;)
 
 ## 💬  How to show Dialogs without BuildContext? 
 
@@ -171,7 +173,11 @@ OneContext().addOverlay(
 OneContext().removeOverlay(myCustomAndAwesomeOverlayId);
 ```
 
-
+## ⚙ Theme and MediaQuery
+```dart
+print('Platform: ' + OneContext().theme.platform); // TargetPlatform.iOS
+print('Orientation: ' + OneContext().mediaQuery.orientation); // Orientation.portrait
+```
 
 ## ⚠  Important: Configure MaterialApp. e.g.
 ```dart
@@ -184,12 +190,11 @@ return MaterialApp(
 );
 ```
 
-#### Add dependency
-```yaml
-  dependencies:
-    one_context: ^0.1.1
-```
 
+## 🚦  Warnings
+\* OneContex().theme and OneContex().mediaQuery are global instances of the root of the widget tree. Use it with care! It can reproduce unexpected behavior if you don't understand it.
+
+\* OneContext().context is like a root context, so, it should not be used directly, as it can reproduce unexpected behaviors, unless you know how it works.
 
 
 ## 👨‍💻👨‍💻  Contributing

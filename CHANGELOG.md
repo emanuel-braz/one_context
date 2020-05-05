@@ -1,3 +1,8 @@
+## [0.2.1] - May 5, 2020
+* Add MediaQuery
+* Add Theme
+* Add TextTheme
+
 ## [0.1.1] - Update description
 
 ## [0.1.0] - Initial release
