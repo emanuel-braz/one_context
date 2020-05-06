@@ -1,3 +1,6 @@
+## [0.2.2] - May 6, 2020
+* Linter fixes
+
 ## [0.2.1] - May 5, 2020
 * Add MediaQuery
 * Add Theme

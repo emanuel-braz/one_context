@@ -119,7 +119,7 @@ mixin DialogController {
   }
 
   /// Pop the top-most dialog off the OneContext.dialog.
-  bool popDialog<T extends Object>([T result]) {
+  popDialog<T extends Object>([T result]) {
     return Navigator.of(context).pop<T>(result);
   }
 }

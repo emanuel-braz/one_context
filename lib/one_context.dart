@@ -1,3 +1,3 @@
 library one_context;
 
-export 'package:one_context/src/controllers/one_context.dart';
+export 'package:one_context/src/controllers/one_context.dart' show OneContext;

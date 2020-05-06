@@ -52,7 +52,7 @@ mixin NavigatorController {
       _nav.maybePop<T>(result);
 
   /// Pop the top-most route off the navigator.
-  bool pop<T extends Object>([T result]) => _nav.pop<T>(result);
+  pop<T extends Object>([T result]) => _nav.pop<T>(result);
 
   /// Pop the current route off the navigator and push a named route in its
   /// place.
