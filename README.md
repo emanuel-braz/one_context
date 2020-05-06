@@ -8,6 +8,10 @@
 
 ## OneContext provides a simple way to deal with Dialogs, Overlays, Navigations, Theme* and MediaQuery* with no need of BuildContext.
 
+> If you are Flutter developer, you don’t have to learn something new. This package use the same identificators and names from framework. It’s not a specialized* implementation, so you have the power to create and do not get blocked because of that.
+
+> If you are Flutter package developer, OneContext can be very useful too!  You can create a custom dialogs package with no need BuildContext, and release a version, that do not depends of the context, to the comunity.
+
 ![demo](https://user-images.githubusercontent.com/3827308/81033427-06347480-8e6a-11ea-8d36-081bfbdd5bc6.png)
 
 > BuildContext always is needed (in some cases we need to choose carefully the specific one to make things work as expected), but, to global things, like dialogs, it can be reached by OneContext package. 🎯
@@ -36,6 +40,11 @@
     OneContext().pushNamed(...);
     OneContext().showDialog(...);
     OneContext().addOverlay(...);
+    
+    // and can access info from:
+    // OneContext().mediaQuery ...
+    // OneContext().textTheme ...
+    // OneContext().theme ...
 ```
 
 #### OneContext is:
@@ -43,7 +52,7 @@
 * Easy to learn/use
 * It use same native function names from Flutter, to keep it simple and intuitive ;)
 
-## 💬  How to show Dialogs without BuildContext? 
+## 💬  How to show Dialogs with no need of the BuildContext? 
 
 ```dart
 // example snackBar
@@ -103,7 +112,7 @@ OneContext().showModalBottomSheet<String>(
 
 
 
-## ⛵  How to navigate? 
+## ⛵  How to navigate? (All methods from Navigator Class are available)
 ```dart
 // go to second page using named route
 OneContext().pushNamed('/second');
@@ -194,7 +203,9 @@ return MaterialApp(
 ## 🚦  Warnings
 \* OneContex().theme and OneContex().mediaQuery are global instances of the root of the widget tree. Use it with care! It can reproduce unexpected behavior if you don't understand it.
 
-\* OneContext().context is like a root context, so, it should not be used directly, as it can reproduce unexpected behaviors, unless you know how it works.
+\* OneContext().context is like a root context, so, it should not be used directly, as it can reproduce unexpected behaviors, unless you have a understanding how it works. It shouldn't work well with InheritedWidget for example.
+
+\* This package only uses specialized implementation in Overlays, to make things easy and ensure a quick start.
 
 
 ## 👨‍💻👨‍💻  Contributing
