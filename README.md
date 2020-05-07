@@ -199,6 +199,22 @@ return MaterialApp(
 );
 ```
 
+### In initState (Can not show dialog if markNeedsBuild, so schedule to next frame)
+```dart
+@override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback(
+      (duration) => OneContext().showDialog(
+        builder: (_) => AlertDialog(
+          title: new Text("On Page Load"),
+          content: new Text("Hello World!"),
+        ),
+      ),
+    );
+```
+
 
 ## 🚦  Warnings
 \* OneContex().theme and OneContex().mediaQuery are global instances of the root of the widget tree. Use it with care! It can reproduce unexpected behavior if you don't understand it.
