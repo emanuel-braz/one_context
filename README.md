@@ -12,8 +12,8 @@
 
 > If you are Flutter package developer, OneContext can be very useful too!  You can create a custom dialogs package with no need BuildContext, and release a version, that do not depends of the context, to the comunity.
 
-![demo](https://user-images.githubusercontent.com/3827308/81033427-06347480-8e6a-11ea-8d36-081bfbdd5bc6.png)
-
+![one_context_demo](https://user-images.githubusercontent.com/3827308/81240561-13727000-8fde-11ea-8400-64e2b2861a87.gif)
+  
 > BuildContext always is needed (in some cases we need to choose carefully the specific one to make things work as expected), but, to global things, like dialogs, it can be reached by OneContext package. 🎯
 
 
