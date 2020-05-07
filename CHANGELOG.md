@@ -1,3 +1,6 @@
+## [0.2.3] - May 6, 2020
+* fix generics
+
 ## [0.2.2] - May 6, 2020
 * Linter fixes
 

@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       navigatorKey: OneContext().key,
       // builder: (context, widget) => OneContext().builder(context, widget, mediaQueryData: MediaQuery.of(context).copyWith(textScaleFactor: 1.0)),
       title:
-          'OneContext Demo - Dialogs, Overlays and Navigations without BuildContext',
+          'OneContext Demo - Dialogs, Overlays and Navigations with no need BuildContext',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),

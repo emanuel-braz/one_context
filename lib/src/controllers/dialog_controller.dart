@@ -1,28 +1,7 @@
 import 'package:one_context/src/controllers/one_context.dart';
 import 'package:flutter/material.dart';
 
-typedef Future<T> DialogFuture<T>(
-    {bool barrierDismissible,
-    Widget Function(BuildContext) builder,
-    bool useRootNavigator});
-typedef Future<T> DialogModalSheet<T>(
-    {Widget Function(BuildContext) builder,
-    Color backgroundColor,
-    double elevation,
-    ShapeBorder shape,
-    Clip clipBehavior,
-    bool isScrollControlled,
-    bool useRootNavigator,
-    bool isDismissible});
 typedef Widget DialogBuilder(BuildContext context);
-typedef ScaffoldFeatureController<SnackBar, SnackBarClosedReason> DialogSnackBar(
-    SnackBar Function(BuildContext) builder);
-typedef PersistentBottomSheetController<T> DialogBottomSheet<T>(
-    {Widget Function(BuildContext) builder,
-    Color backgroundColor,
-    double elevation,
-    ShapeBorder shape,
-    Clip clipBehavior});
 
 mixin DialogController {
   /// Return dialog utility class `DialogController`
@@ -30,10 +9,27 @@ mixin DialogController {
 
   BuildContext get context => OneContext().context;
 
-  DialogFuture _showDialog;
-  DialogModalSheet _showModalBottomSheet;
-  DialogSnackBar _showSnackBar;
-  DialogBottomSheet _showBottomSheet;
+  Future<T> Function<T>(
+      {bool barrierDismissible,
+      Widget Function(BuildContext) builder,
+      bool useRootNavigator}) _showDialog;
+  Future<T> Function<T>(
+      {Widget Function(BuildContext) builder,
+      Color backgroundColor,
+      double elevation,
+      ShapeBorder shape,
+      Clip clipBehavior,
+      bool isScrollControlled,
+      bool useRootNavigator,
+      bool isDismissible}) _showModalBottomSheet;
+  ScaffoldFeatureController<SnackBar, SnackBarClosedReason> Function(
+      SnackBar Function(BuildContext) builder) _showSnackBar;
+  PersistentBottomSheetController<T> Function<T>(
+      {Widget Function(BuildContext) builder,
+      Color backgroundColor,
+      double elevation,
+      ShapeBorder shape,
+      Clip clipBehavior}) _showBottomSheet;
 
   /// Displays a Material dialog above the current contents of the app, with
   /// Material entrance and exit animations, modal barrier color, and modal
@@ -41,9 +37,10 @@ mixin DialogController {
   Future<T> showDialog<T>(
       {@required Widget Function(BuildContext) builder,
       bool barrierDismissible = true,
-      bool useRootNavigator = true}) async {
+      bool useRootNavigator = true}) {
     assert(builder != null);
-    return await _showDialog(
+
+    return _showDialog<T>(
       builder: builder,
       barrierDismissible: barrierDismissible,
       useRootNavigator: useRootNavigator,
@@ -72,9 +69,9 @@ mixin DialogController {
       Clip clipBehavior,
       bool isScrollControlled = false,
       bool useRootNavigator = false,
-      bool isDismissible = true}) async {
+      bool isDismissible = true}) {
     assert(builder != null);
-    return await _showModalBottomSheet(
+    return _showModalBottomSheet<T>(
         builder: builder,
         backgroundColor: backgroundColor,
         clipBehavior: clipBehavior,
@@ -97,7 +94,7 @@ mixin DialogController {
       ShapeBorder shape,
       Clip clipBehavior}) {
     assert(builder != null);
-    return _showBottomSheet(
+    return _showBottomSheet<T>(
         builder: builder,
         backgroundColor: backgroundColor,
         elevation: elevation,
@@ -107,10 +104,31 @@ mixin DialogController {
 
   /// Register callbacks
   void registerCallback(
-      {DialogFuture showDialog,
-      DialogModalSheet showModalBottomSheet,
-      DialogSnackBar showSnackBar,
-      DialogBottomSheet showBottomSheet}) {
+      {Future<T> Function<T>(
+              {bool barrierDismissible,
+              Widget Function(BuildContext) builder,
+              bool useRootNavigator})
+          showDialog,
+      Future<T> Function<T>(
+              {Widget Function(BuildContext) builder,
+              Color backgroundColor,
+              double elevation,
+              ShapeBorder shape,
+              Clip clipBehavior,
+              bool isScrollControlled,
+              bool useRootNavigator,
+              bool isDismissible})
+          showModalBottomSheet,
+      ScaffoldFeatureController<SnackBar, SnackBarClosedReason> Function(
+              SnackBar Function(BuildContext) builder)
+          showSnackBar,
+      PersistentBottomSheetController<T> Function<T>(
+              {Widget Function(BuildContext) builder,
+              Color backgroundColor,
+              double elevation,
+              ShapeBorder shape,
+              Clip clipBehavior})
+          showBottomSheet}) {
     _showDialog = showDialog;
     _showDialog = showDialog;
     _showSnackBar = showSnackBar;

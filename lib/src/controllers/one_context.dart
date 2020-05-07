@@ -34,10 +34,31 @@ class OneContext with NavigatorController, OverlayController, DialogController {
 
   /// Register all necessary callbacks from main widget, automatically
   void registerDialogCallback(
-      {DialogFuture showDialog,
-      DialogModalSheet showModalBottomSheet,
-      DialogSnackBar showSnackBar,
-      DialogBottomSheet showBottomSheet}) {
+      {Future<T> Function<T>(
+              {bool barrierDismissible,
+              Widget Function(BuildContext) builder,
+              bool useRootNavigator})
+          showDialog,
+      Future<T> Function<T>(
+              {Widget Function(BuildContext) builder,
+              Color backgroundColor,
+              double elevation,
+              ShapeBorder shape,
+              Clip clipBehavior,
+              bool isScrollControlled,
+              bool useRootNavigator,
+              bool isDismissible})
+          showModalBottomSheet,
+      ScaffoldFeatureController<SnackBar, SnackBarClosedReason> Function(
+              SnackBar Function(BuildContext) builder)
+          showSnackBar,
+      PersistentBottomSheetController<T> Function<T>(
+              {Widget Function(BuildContext) builder,
+              Color backgroundColor,
+              double elevation,
+              ShapeBorder shape,
+              Clip clipBehavior})
+          showBottomSheet}) {
     registerCallback(
       showDialog: showDialog,
       showSnackBar: showSnackBar,
