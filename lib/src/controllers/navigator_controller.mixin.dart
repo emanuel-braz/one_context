@@ -8,7 +8,7 @@ mixin NavigatorController {
 
   GlobalKey<NavigatorState> _key;
 
-  /// Get global key `GlobalKey<NavigatorState>()`
+  /// Get the global key `GlobalKey<NavigatorState>()`
   ///
   /// Use [OneContext().key] in MaterialApp navigatorKey,
   /// in order to navigate.
@@ -20,6 +20,20 @@ mixin NavigatorController {
   ///      navigatorKey: OneContext().key,
   ///      ...
   /// ```
+  ///
+  /// IMPORTANT: Need instantiate OneContext().key = GlobalKey<NavigatorState>(),
+  /// ONLY if you use MORE THAN ONE app in same project
+  ///
+  /// For example, if you have MainPetShopApp() and MainBeerReferenceApp() and you want to change between them.
+  ///
+  /// e.g.
+  ///
+  /// ```
+  /// OnePlatform.reboot(
+  ///     setUp: () => OneContext().key = GlobalKey<NavigatorState>(),
+  ///     builder: () => MyApp()
+  /// );
+  /// ```
   GlobalKey<NavigatorState> get key => _key ??= GlobalKey<NavigatorState>();
   set key(newKey) => _key = newKey;
 
@@ -29,7 +43,7 @@ mixin NavigatorController {
         'Navigator key not found! MaterialApp.navigatorKey is null or not set correctly.'
         '\n\nYou need to use OneContext().navigator.key to be able to navigate! e.g. ->'
         '\n\nMaterialApp(\n    navigatorKey: OneContext().navigator.key\n    ...\n)');
-    return _key.currentState;
+    return key.currentState;
   }
 
   /// Push a named route onto the navigator that most tightly encloses the given

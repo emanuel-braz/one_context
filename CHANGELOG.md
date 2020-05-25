@@ -1,3 +1,10 @@
+## [0.3.0] - May 25, 2020
+* Add OneHotReload to reload widget tree (useful for theme, locale, etc...)
+* Add dark and light theme mode changer (Auto save)
+* Add themeData and darkThemeData changer
+* Add reload, restart and reboot app
+* Add boot another app with setUp feature
+
 ## [0.2.3] - May 6, 2020
 * fix generics
 

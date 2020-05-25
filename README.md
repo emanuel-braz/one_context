@@ -182,6 +182,69 @@ OneContext().addOverlay(
 OneContext().removeOverlay(myCustomAndAwesomeOverlayId);
 ```
 
+## 🎨 Changing Dark and Light theme mode
+```dart
+OneHotReload<OneThemeChangerEvent>(
+  stopBubbling: true,
+  builder: (_, __) {
+    return MaterialApp(
+      builder: OneContext().builder,
+      themeMode: OneThemeController.initThemeMode(ThemeMode.light),
+      theme: OneThemeController.initThemeData(ThemeData(brightness: Brightness.light)),
+      darkTheme: OneThemeController.initDarkThemeData(ThemeData(brightness: Brightness.dark)),
+      ...
+    );
+);
+
+// Later...
+OneContext().oneTheme.toggleMode();
+
+// Or change only the dark theme
+OneContext().oneTheme.changeDarkThemeData(
+  ThemeData(
+    primarySwatch: Colors.amber,
+    brightness: Brightness.dark
+ )
+);
+```
+
+## 🚧 Reload, Restart and Reboot the app
+
+#### Reload and Restart the app
+```dart
+// Place that widget on most top
+OneHotReload(
+  builder: (_, __) => child
+);
+
+// Later... in children
+
+// keep state in all widgets
+OneHotReload.softReload(context);
+
+// some widgets will loose state
+OneHotReload.hardReload(context);
+```
+
+#### Reboot and load different apps
+```dart
+// Set the main() function
+void main() => OnePlatform.app = () => MyApp();
+
+// Later... Call reboot without recreating root app
+OnePlatform.reboot();
+
+// Later... Call reboot recreating the entire application
+OnePlatform.reboot(
+  builder: () => MyApp()
+);
+
+// You even can load an entire different app
+OnePlatform.reboot(
+  builder: () => MyApp2()
+);
+```
+
 ## ⚙ Theme and MediaQuery
 ```dart
 print('Platform: ' + OneContext().theme.platform); // TargetPlatform.iOS
@@ -197,6 +260,22 @@ return MaterialApp(
     navigatorKey: OneContext().key,
     ...
 );
+```
+
+### In initState (Can not show dialog if markNeedsBuild, so schedule to next frame)
+```dart
+@override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback(
+      (duration) => OneContext().showDialog(
+        builder: (_) => AlertDialog(
+          title: new Text("On Page Load"),
+          content: new Text("Hello World!"),
+        ),
+      ),
+    );
 ```
 
 

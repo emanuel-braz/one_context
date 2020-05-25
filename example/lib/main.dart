@@ -1,34 +1,137 @@
 import 'dart:math';
+import 'package:flutter/services.dart';
 import 'package:one_context/one_context.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-void main() => runApp(MyApp());
+bool debugShowCheckedModeBanner = false;
+const localeEnglish = [Locale('en', '')];
+
+void main() => OnePlatform.app = () => MyApp();
 
 class MyApp extends StatelessWidget {
+  MyApp() {
+    print('MyApp loaded!');
+    debugShowCheckedModeBanner = true;
+  }
+
   @override
   Widget build(BuildContext context) {
-    /// important: Use [OneContext().builder] in MaterialApp builder, in order to show dialogs and overlays.
+    /// important: Use [OneContext().builder] in MaterialApp builder, in order to show dialogs, overlays and change the app theme.
     /// important: Use [OneContext().key] in MaterialApp navigatorKey, in order to navigate.
-    return MaterialApp(
-      builder: OneContext().builder,
-      navigatorKey: OneContext().key,
-      // builder: (context, widget) => OneContext().builder(context, widget, mediaQueryData: MediaQuery.of(context).copyWith(textScaleFactor: 1.0)),
-      title:
-          'OneContext Demo - Dialogs, Overlays and Navigations with no need BuildContext',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(title: 'OneContext Demo'),
-      routes: {
-        '/second': (context) => SecondPage(),
+
+    return OneHotReload<List<Locale>>(
+      // This widget rebuild the Material app to update theme, supportedLocales, etc...
+
+      stopBubbling: true, // avoid the data bubbling to ancestors widgets
+      initialData:
+          localeEnglish, // [data] is null during boot of the application, but you can set initialData ;)
+      rebuildOnNull:
+          true, // Allow other entities reload this widget without messing up currenty data
+
+      builder: (context, dataLocale) {
+        if (dataLocale != null && dataLocale != localeEnglish)
+          print('Set Locale: $dataLocale');
+
+        return OneHotReload<OneThemeChangerEvent>(
+            stopBubbling: true,
+            builder: (context, data) {
+              return MaterialApp(
+                debugShowCheckedModeBanner: debugShowCheckedModeBanner,
+
+                // Configure reactive theme mode and theme data (needs OneHotReload above in the tree)
+                themeMode: OneThemeController.initThemeMode(ThemeMode.light),
+                theme: OneThemeController.initThemeData(ThemeData(
+                    primarySwatch: Colors.green, brightness: Brightness.light)),
+                darkTheme: OneThemeController.initDarkThemeData(
+                    ThemeData(brightness: Brightness.dark)),
+
+                // Configure [OneContext] to dialogs, overlays, snackbars
+                builder: OneContext().builder,
+                // builder: (context, widget) => OneContext().builder(context, widget, mediaQueryData: MediaQuery.of(context).copyWith(textScaleFactor: 1.0)),
+
+                // Set navigator key in order to navigate
+                navigatorKey: OneContext().key,
+
+                // [data] comes through events
+                supportedLocales: dataLocale ?? [const Locale('en', '')],
+
+                title: 'OneContext Demo',
+                home: MyHomePage(
+                  title: 'OneContext Demo',
+                ),
+                routes: {'/second': (context) => SecondPage()},
+              );
+            });
       },
     );
   }
 }
 
+class MyApp2 extends StatelessWidget {
+  MyApp2() {
+    print('MyApp2 loaded!');
+    OneContext().key = GlobalKey<NavigatorState>();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+        theme: ThemeData(primarySwatch: Colors.pink),
+        title: 'OneContext Demo',
+        home: MyHomePage2(title: 'BOOT A NEW APPLICATION'),
+        routes: {'/second': (context) => SecondPage()},
+        builder: OneContext().builder,
+        navigatorKey: OneContext().key);
+  }
+}
+
+class MyHomePage2 extends StatefulWidget {
+  MyHomePage2({Key key, this.title}) : super(key: key);
+  final String title;
+  @override
+  _MyHomePage2State createState() => _MyHomePage2State();
+}
+
+class _MyHomePage2State extends State<MyHomePage2> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: Container(
+        color: Colors.pink,
+        alignment: Alignment.center,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            RaisedButton(
+                child: Text('COME BACK TO THE OLD APP'),
+                onPressed: () {
+                  OnePlatform.reboot(
+                    setUp: () {
+                      OneContext().key = GlobalKey<NavigatorState>();
+                    },
+                    builder: () => MyApp(),
+                  );
+                }),
+            RaisedButton(
+                child: Text('Navigate to Second Page'),
+                onPressed: () {
+                  OneContext().pushNamed('/second');
+                })
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  final String reloadAppButtonLabel;
+  MyHomePage({Key key, this.title, this.reloadAppButtonLabel})
+      : super(key: key);
   final String title;
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -74,6 +177,83 @@ class _MyHomePageState extends State<MyHomePage>
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               SizedBox(height: 20),
+              RaisedButton(
+                child: Text(
+                    'Soft Reload (ShowModeBanner = $debugShowCheckedModeBanner)'),
+                onPressed: () {
+                  debugShowCheckedModeBanner = !debugShowCheckedModeBanner;
+                  OneHotReload.softReload(context);
+                },
+              ),
+              RaisedButton(
+                child: Text('Hard Reload'),
+                onPressed: () {
+                  OneHotReload.hardReload(context);
+                },
+              ),
+              RaisedButton(
+                child: Text('Soft Reeboot the app'),
+                onPressed: () {
+                  OnePlatform.reboot(setUp: () => print('Reboot the app!'));
+                },
+              ),
+              RaisedButton(
+                child: Text('Setup and Hard Reeboot'),
+                onPressed: () {
+                  OnePlatform.reboot(
+                      builder: () => MyApp(),
+                      setUp: () {
+                        print(
+                            '\n\nSetting debugShowCheckedModeBanner = true, so the debug banner should appear on the app right now.'
+                            '\n\n That is useful for load environment variables and project configuration before boot the app!'
+                            '\n And if you just need run some stuffs and reload the app without change it.');
+                        debugShowCheckedModeBanner = true;
+                      });
+                },
+              ),
+              RaisedButton(
+                child: Text('Load another app'),
+                onPressed: () {
+                  OnePlatform.reboot(
+                      setUp: () {
+                        OneContext().key = GlobalKey<NavigatorState>();
+                      },
+                      builder: () => MyApp2());
+                },
+              ),
+              RaisedButton(
+                child: Text('Change ThemeData Light'),
+                onPressed: () {
+                  OneContext().oneTheme.changeThemeData(ThemeData(
+                      primarySwatch: Colors.purple,
+                      brightness: Brightness.light));
+                },
+              ),
+              RaisedButton(
+                child: Text('Change ThemeData Dark'),
+                onPressed: () {
+                  OneContext().oneTheme.changeDarkThemeData(ThemeData(
+                      primarySwatch: Colors.amber,
+                      brightness: Brightness.dark));
+                },
+              ),
+              RaisedButton(
+                child: Text('Toggle ThemeMode (Dark/Light)'),
+                onPressed: () {
+                  OneContext().oneTheme.toggleMode();
+                },
+              ),
+              RaisedButton(
+                child: Text('Change to english locale support'),
+                onPressed: () {
+                  OneHotReload.softReload<List<Locale>>(
+                    context,
+                    data: [
+                      Locale('en', ''), // English
+                    ],
+                  );
+                },
+              ),
               RaisedButton(
                 child: Text('Show SnackBar'),
                 onPressed: () {
@@ -221,13 +401,37 @@ class _MyHomePageState extends State<MyHomePage>
                       'OneContext().showProgressIndicator(backgroundColor, circularProgressIndicatorColor)');
                   OneContext().showProgressIndicator(
                       backgroundColor: Colors.blue.withOpacity(.3),
-                      circularProgressIndicatorColor: Colors.white);
+                      circularProgressIndicatorColor: Colors.red);
                   Future.delayed(Duration(seconds: 2),
                       () => OneContext().hideProgressIndicator());
                 },
               ),
               RaisedButton(
                 child: Text('Show custom progress indicator'),
+                onPressed: () {
+                  showTipsOnScreen(
+                      'OneContext().showProgressIndicator(backgroundColor, circularProgressIndicatorColor)');
+                  OneContext().showProgressIndicator(
+                    builder: (_) => Container(
+                        color: Colors.black38,
+                        alignment: Alignment.center,
+                        child: SizedBox(
+                          height: 80,
+                          width: 80,
+                          child: Card(
+                            color: Colors.white,
+                            elevation: 0,
+                            // shape: RoundedRectangleBorder(),
+                            child: Center(child: CircularProgressIndicator()),
+                          ),
+                        )),
+                  );
+                  Future.delayed(Duration(seconds: 2),
+                      () => OneContext().hideProgressIndicator());
+                },
+              ),
+              RaisedButton(
+                child: Text('Show custom animated indicator'),
                 onPressed: () {
                   showTipsOnScreen(
                       'OneContext().showProgressIndicator(builder)');
@@ -339,11 +543,6 @@ class _MyHomePageState extends State<MyHomePage>
                 },
               ),
               SizedBox(height: 24),
-              Text(
-                'Dialogs, Overlays and Navigations with no need BuildContext.',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 22),
-              )
             ],
           ),
         ),
@@ -364,8 +563,8 @@ class SecondPage extends StatelessWidget {
           RaisedButton(
             child: Text('Go Back - pop("success")'),
             onPressed: () {
-              showTipsOnScreen('OneContext().pop("success")');
-              OneContext.instance.pop('success');
+              // showTipsOnScreen('OneContext().pop("success")');
+              OneContext().pop('success');
             },
           ),
         ],

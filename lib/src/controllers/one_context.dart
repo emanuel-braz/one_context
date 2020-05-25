@@ -1,15 +1,17 @@
+import 'package:flutter/foundation.dart';
 import 'package:one_context/src/components/one_context_widget.dart';
-import 'package:one_context/src/controllers/dialog_controller.dart';
-import 'package:one_context/src/controllers/navigator_controller.dart';
-import 'package:one_context/src/controllers/overlay_controller.dart';
+import 'package:one_context/src/controllers/dialog_controller.mixin.dart';
+import 'package:one_context/src/controllers/navigator_controller.mixin.dart';
+import 'package:one_context/src/controllers/one_notification_controller.dart';
+import 'package:one_context/src/controllers/overlay_controller.mixin.dart';
 import 'package:flutter/material.dart';
+import 'package:one_context/src/controllers/one_theme_controller.dart';
 
 class OneContext with NavigatorController, OverlayController, DialogController {
   BuildContext _context;
 
-  /// The almost root context of the app,
-  /// use it carefully or don't use it isolated!
-  /// Warning: You are on your own right here
+  /// The almost top root context of the app,
+  /// use it carefully or don't use it directly!
   BuildContext get context {
     assert(
         _context != null,
@@ -23,48 +25,65 @@ class OneContext with NavigatorController, OverlayController, DialogController {
 
   set context(newContext) => _context = newContext;
 
+  // MediaQuery, Theme and FocusScope
   MediaQueryData get mediaQuery => MediaQuery.of(context);
   ThemeData get theme => Theme.of(context);
   TextTheme get textTheme => theme.textTheme;
   FocusScopeNode get focusScope => FocusScope.of(context);
 
-  OneContext._private();
+  // Locale
+  Locale get locale => Localizations.localeOf(context);
+
+  // ThemeMode and ThemeData
+  ThemeMode get themeMode => oneTheme.themeMode;
+  ThemeData get themeData => oneTheme.themeData;
+  ThemeData get darkThemeData => oneTheme.darkThemeData;
+
+  // Notifiers
+  OneNotificationController oneNotifier;
+  OneThemeController oneTheme;
+
+  OneContext._private() {
+    oneNotifier = OneNotificationController();
+    oneTheme = OneThemeController();
+  }
+
   static OneContext instance = OneContext._private();
   factory OneContext() => instance;
 
   /// Register all necessary callbacks from main widget, automatically
-  void registerDialogCallback(
-      {Future<T> Function<T>(
-              {bool barrierDismissible,
-              Widget Function(BuildContext) builder,
-              bool useRootNavigator})
-          showDialog,
-      Future<T> Function<T>(
-              {Widget Function(BuildContext) builder,
-              Color backgroundColor,
-              double elevation,
-              ShapeBorder shape,
-              Clip clipBehavior,
-              bool isScrollControlled,
-              bool useRootNavigator,
-              bool isDismissible})
-          showModalBottomSheet,
-      ScaffoldFeatureController<SnackBar, SnackBarClosedReason> Function(
-              SnackBar Function(BuildContext) builder)
-          showSnackBar,
-      PersistentBottomSheetController<T> Function<T>(
-              {Widget Function(BuildContext) builder,
-              Color backgroundColor,
-              double elevation,
-              ShapeBorder shape,
-              Clip clipBehavior})
-          showBottomSheet}) {
+  void registerDialogCallback({
+    Future<T> Function<T>(
+            {bool barrierDismissible,
+            Widget Function(BuildContext) builder,
+            bool useRootNavigator})
+        showDialog,
+    Future<T> Function<T>(
+            {Widget Function(BuildContext) builder,
+            Color backgroundColor,
+            double elevation,
+            ShapeBorder shape,
+            Clip clipBehavior,
+            bool isScrollControlled,
+            bool useRootNavigator,
+            bool isDismissible})
+        showModalBottomSheet,
+    ScaffoldFeatureController<SnackBar, SnackBarClosedReason> Function(
+            SnackBar Function(BuildContext) builder)
+        showSnackBar,
+    PersistentBottomSheetController<T> Function<T>(
+            {Widget Function(BuildContext) builder,
+            Color backgroundColor,
+            double elevation,
+            ShapeBorder shape,
+            Clip clipBehavior})
+        showBottomSheet,
+  }) {
     registerCallback(
-      showDialog: showDialog,
-      showSnackBar: showSnackBar,
-      showModalBottomSheet: showModalBottomSheet,
-      showBottomSheet: showBottomSheet,
-    );
+        showDialog: showDialog,
+        showSnackBar: showSnackBar,
+        showModalBottomSheet: showModalBottomSheet,
+        showBottomSheet: showBottomSheet);
   }
 
   /// Use [OneContext().builder] in MaterialApp builder,
