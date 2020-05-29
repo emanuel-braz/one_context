@@ -183,7 +183,7 @@ OneContext().removeOverlay(myCustomAndAwesomeOverlayId);
 ```
 
 ## 🎨 Changing Dark and Light theme mode
-#### Breaking change: OneHotReload becomes OneNotificationBuilder
+#### Breaking change: OneHotReload becomes OneNotification
 ```dart
 OneNotification<OneThemeChangerEvent>(
   stopBubbling: true, // avoid bubbling to ancestors
