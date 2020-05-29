@@ -183,9 +183,10 @@ OneContext().removeOverlay(myCustomAndAwesomeOverlayId);
 ```
 
 ## 🎨 Changing Dark and Light theme mode
+#### Breaking change: OneHotReload becomes OneNotificationBuilder
 ```dart
-OneHotReload<OneThemeChangerEvent>(
-  stopBubbling: true,
+OneNotification<OneThemeChangerEvent>(
+  stopBubbling: true, // avoid bubbling to ancestors
   builder: (_, __) {
     return MaterialApp(
       builder: OneContext().builder,
@@ -208,22 +209,66 @@ OneContext().oneTheme.changeDarkThemeData(
 );
 ```
 
-## 🚧 Reload, Restart and Reboot the app
+## 🚧 Reload, Restart and Reboot the app (Need bubbling events or data?)
+
+#### The concept of using Notifications:
+#### First define the data type in type generics, after that, you can rebuild multiple ancestors widgets that listen the same data type. This is used for the package in this example, to change ThemeMode and Locale and even Restart the app entirely.
+
+```dart
+OneNotification<List<Locale>>(
+      onVisited: (context, localeList) {
+        print('widget visited!');
+      },
+      stopBubbling: true, // avoid the data bubbling to ancestors widgets
+      initialData: _localeEnglish, // [data] is null during boot of the application, but you can set initialData
+      rebuildOnNull: true, // Allow other entities reload this widget without messing up currenty data (Data is cached on first event)
+      builder: (context, localeList) {
+        return MaterialApp(
+          supportedLocales: localeList,
+        );
+      },
+    );
+```
+
+#### Need to dispatch more specialized data/event?
+```dart
+
+// My Specialized Event
+class MySpecializedEvent {
+  final String text;
+  MySpecializedEvent(this.text);
+}
+
+// Widget
+OneNotification<MySpecializedEvent>(
+  builder: (context, event) {
+    return Text(event.text);
+  },
+)
+
+// Later, in children, call `OneNotifier.notify` to get ancestors notified
+OneNotifier.notify(
+  context,
+  NotificationPayload(
+    data: MySpecializedEvent('Nice!');
+  )
+);
+```
 
 #### Reload and Restart the app
 ```dart
 // Place that widget on most top
-OneHotReload(
+OneNotification(
   builder: (_, __) => child
 );
 
 // Later... in children
 
-// keep state in all widgets
-OneHotReload.softReload(context);
+// Dont lose state
+OneNotification.softReloadRoot(context);
 
-// some widgets will loose state
-OneHotReload.hardReload(context);
+// Lose state
+OneNotification.hardReloadRoot(context);
 ```
 
 #### Reboot and load different apps

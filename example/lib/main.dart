@@ -13,6 +13,11 @@ class MyApp extends StatelessWidget {
   MyApp() {
     print('MyApp loaded!');
     debugShowCheckedModeBanner = true;
+
+    // Reseting light theme
+    if (OneContext.hasContext)
+      OneContext().oneTheme.changeThemeData(
+          ThemeData(primarySwatch: Colors.green, brightness: Brightness.light));
   }
 
   @override
@@ -20,33 +25,38 @@ class MyApp extends StatelessWidget {
     /// important: Use [OneContext().builder] in MaterialApp builder, in order to show dialogs, overlays and change the app theme.
     /// important: Use [OneContext().key] in MaterialApp navigatorKey, in order to navigate.
 
-    return OneHotReload<List<Locale>>(
+    return OneNotification<List<Locale>>(
+      onVisited: (_, __) {
+        print('Root widget visited!');
+      },
       // This widget rebuild the Material app to update theme, supportedLocales, etc...
-
       stopBubbling: true, // avoid the data bubbling to ancestors widgets
       initialData:
           localeEnglish, // [data] is null during boot of the application, but you can set initialData ;)
       rebuildOnNull:
-          true, // Allow other entities reload this widget without messing up currenty data
+          true, // Allow other entities reload this widget without messing up currenty data (Data is cached on first event)
 
       builder: (context, dataLocale) {
         if (dataLocale != null && dataLocale != localeEnglish)
           print('Set Locale: $dataLocale');
 
-        return OneHotReload<OneThemeChangerEvent>(
+        return OneNotification<OneThemeChangerEvent>(
+            onVisited: (_, __) {
+              print('Theme Changer widget visited!');
+            },
             stopBubbling: true,
             builder: (context, data) {
               return MaterialApp(
                 debugShowCheckedModeBanner: debugShowCheckedModeBanner,
 
-                // Configure reactive theme mode and theme data (needs OneHotReload above in the tree)
+                // Configure reactive theme mode and theme data (needs OneNotification above in the widget tree)
                 themeMode: OneThemeController.initThemeMode(ThemeMode.light),
                 theme: OneThemeController.initThemeData(ThemeData(
                     primarySwatch: Colors.green, brightness: Brightness.light)),
                 darkTheme: OneThemeController.initDarkThemeData(
                     ThemeData(brightness: Brightness.dark)),
 
-                // Configure [OneContext] to dialogs, overlays, snackbars
+                // Configure [OneContext] to dialogs, overlays, snackbars, and ThemeMode
                 builder: OneContext().builder,
                 // builder: (context, widget) => OneContext().builder(context, widget, mediaQueryData: MediaQuery.of(context).copyWith(textScaleFactor: 1.0)),
 
@@ -182,13 +192,14 @@ class _MyHomePageState extends State<MyHomePage>
                     'Soft Reload (ShowModeBanner = $debugShowCheckedModeBanner)'),
                 onPressed: () {
                   debugShowCheckedModeBanner = !debugShowCheckedModeBanner;
-                  OneHotReload.softReload(context);
+                  OneNotification.softReloadRoot(
+                      context); // It will visit ancestors till the root OneNotificationBuilder widget)
                 },
               ),
               RaisedButton(
                 child: Text('Hard Reload'),
                 onPressed: () {
-                  OneHotReload.hardReload(context);
+                  OneNotification.hardReloadRoot(context);
                 },
               ),
               RaisedButton(
@@ -246,12 +257,10 @@ class _MyHomePageState extends State<MyHomePage>
               RaisedButton(
                 child: Text('Change to english locale support'),
                 onPressed: () {
-                  OneHotReload.softReload<List<Locale>>(
-                    context,
-                    data: [
-                      Locale('en', ''), // English
-                    ],
-                  );
+                  OneNotification.notify<List<Locale>>(context,
+                      payload: NotificationPayload(data: [
+                        Locale('en', ''), // English
+                      ]));
                 },
               ),
               RaisedButton(

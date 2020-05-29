@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:one_context/one_context.dart';
+import 'package:one_context/src/components/one_notifier.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class OneThemeChangerEvent {}
@@ -9,7 +10,9 @@ typedef OneAppBuilder = Widget Function<T>(BuildContext context, T data);
 
 /// In order to change theme mode,
 /// use `MaterialApp.themeMode: OneThemeController.initThemeMode(...)`
-/// and configure `MaterialApp.theme: OneThemeController.initThemeData(...)`
+///
+/// In order to change theme and dartkTheme
+/// configure `MaterialApp.theme: OneThemeController.initThemeData(...)`
 /// and `MaterialApp.darkTheme: OneThemeController.initDarkThemeData(...)`
 ///
 /// later, call `OneContext().oneTheme.changeMode(ThemeMode.dark);`
@@ -17,15 +20,13 @@ typedef OneAppBuilder = Widget Function<T>(BuildContext context, T data);
 /// or `OneContext().oneTheme.changeDarkThemeData(ThemeData(...));`
 ///
 /// Important: configure `MaterialApp.builder: OneContext().builder,`
-/// and add `OneHotReload` as parent of MaterialApp.
+/// and add `OneNotificationBuilder` as parent of MaterialApp.
 class OneThemeController {
   OneThemeController() {
     loadThemeMode();
   }
 
   static const String _themeModeKey = 'themeModeKey';
-  static const String _themeDataKey = 'themeDataKey';
-  static const String _darkThemeDataKey = 'darkThemeDataKey';
   OneThemeController get oneTheme => this;
   BuildContext get context => OneContext().context;
 
@@ -40,8 +41,8 @@ class OneThemeController {
 
   void changeThemeData(ThemeData themeData, {BuildContext buildContext}) {
     _themeData = themeData;
-    OneContext().oneNotifier.notify<OneThemeChangerEvent>(
-        buildContext ?? OneContext().context, OneThemeChangerEvent());
+    OneContext().oneNotifier.notify(buildContext ?? OneContext().context,
+        NotificationPayload(data: OneThemeChangerEvent()));
   }
 
   /// Dark Theme
@@ -55,7 +56,8 @@ class OneThemeController {
   void changeDarkThemeData(ThemeData themeData, {BuildContext buildContext}) {
     _darkThemeData = themeData;
     OneContext().oneNotifier.notify<OneThemeChangerEvent>(
-        buildContext ?? OneContext().context, OneThemeChangerEvent());
+        buildContext ?? OneContext().context,
+        NotificationPayload(data: OneThemeChangerEvent()));
   }
 
   static ThemeMode _themeMode;
@@ -75,8 +77,8 @@ class OneThemeController {
   Future<void> loadThemeMode() async {
     final bool darkMode = await _isDarkModeFromStorage();
     _themeMode = darkMode ? ThemeMode.dark : ThemeMode.light;
-    OneContext().oneNotifier.notify<OneThemeChangerEvent>(
-        OneContext().context, OneThemeChangerEvent());
+    OneContext().oneNotifier.notify(OneContext().context,
+        NotificationPayload(data: OneThemeChangerEvent()));
   }
 
   Future<void> toggleMode([bool save = true]) async {
@@ -89,8 +91,8 @@ class OneThemeController {
   void changeMode(ThemeMode themeMode,
       {bool save = true, BuildContext buildContext}) {
     _themeMode = themeMode;
-    OneContext().oneNotifier.notify<OneThemeChangerEvent>(
-        buildContext ?? OneContext().context, OneThemeChangerEvent());
+    OneContext().oneNotifier.notify(buildContext ?? OneContext().context,
+        NotificationPayload(data: OneThemeChangerEvent()));
     if (save) {
       _saveMode(themeMode);
     }
@@ -116,8 +118,6 @@ class OneThemeController {
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.remove(_themeModeKey);
-      prefs.remove(_themeDataKey);
-      prefs.remove(_darkThemeDataKey);
     } catch (e) {}
   }
 }

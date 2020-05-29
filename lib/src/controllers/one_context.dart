@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:one_context/src/controllers/one_theme_controller.dart';
 
 class OneContext with NavigatorController, OverlayController, DialogController {
-  BuildContext _context;
+  static BuildContext _context;
 
   /// The almost top root context of the app,
   /// use it carefully or don't use it directly!
@@ -23,7 +23,8 @@ class OneContext with NavigatorController, OverlayController, DialogController {
     return _context;
   }
 
-  set context(newContext) => _context = newContext;
+  static bool get hasContext => _context != null;
+  set context(BuildContext newContext) => _context = newContext;
 
   // MediaQuery, Theme and FocusScope
   MediaQueryData get mediaQuery => MediaQuery.of(context);

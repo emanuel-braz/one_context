@@ -1,3 +1,7 @@
+## [0.4.0] - May 29, 2020
+* Breaking changes on OneHotReload (check README to upgrade)
+* OneHotReload becomes OneNotification, providing a top most generic feature.
+
 ## [0.3.0] - May 25, 2020
 * Add OneHotReload to reload widget tree (useful for theme, locale, etc...)
 * Add dark and light theme mode changer (Auto save)
