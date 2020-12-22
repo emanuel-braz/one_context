@@ -294,7 +294,8 @@ OnePlatform.reboot(
 print('Platform: ' + OneContext().theme.platform); // TargetPlatform.iOS
 print('Orientation: ' + OneContext().mediaQuery.orientation); // Orientation.portrait
 ```
-#### [IMPORTANT] If you need get widget rebuild on theme data changes using `OneContext().oneTheme.toggleMode();`, please consider to use the traditional way `Theme.of(context)` when getting theme data inside widget.
+[IMPORTANT] If you need get widget rebuild on theme data changes using `OneContext().oneTheme.toggleMode();`, please consider to use the traditional way `Theme.of(context)` when getting theme data inside widget.
+
 ```dart
 @override
   Widget build(BuildContext context) {
@@ -337,20 +338,18 @@ return MaterialApp(
 );
 ```
 
-### In initState (Can not show dialog if markNeedsBuild, so schedule to next frame)
+### In initState or inside class constructor (now it's possible)
 ```dart
 @override
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback(
-      (duration) => OneContext().showDialog(
+    OneContext().showDialog(
         builder: (_) => AlertDialog(
           title: new Text("On Page Load"),
           content: new Text("Hello World!"),
         ),
-      ),
-    );
+      );
 ```
 
 
