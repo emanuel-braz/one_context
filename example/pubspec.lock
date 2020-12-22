@@ -39,7 +39,7 @@ packages:
   collection:
     dependency: transitive
     description:
-      name: collection
+      name: charcode
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.15.0-nullsafety.3"

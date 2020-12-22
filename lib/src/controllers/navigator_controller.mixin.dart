@@ -51,8 +51,8 @@ mixin NavigatorController {
   String get defaultRouteName => Navigator.defaultRouteName;
 
   /// The state from the closest instance of this class that encloses the given context.
-  NavigatorState navigatorOf({bool rootNavigator, bool nullOk}) =>
-      Navigator.of(context, rootNavigator: rootNavigator, nullOk: nullOk);
+  NavigatorState navigatorOf({bool rootNavigator}) =>
+      Navigator.of(context, rootNavigator: rootNavigator);
 
   ///  Push the given route onto the navigator.
   Future<T> push<T extends Object>(Route<T> route) => _nav.push<T>(route);
