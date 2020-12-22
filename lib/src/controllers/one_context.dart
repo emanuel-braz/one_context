@@ -13,26 +13,27 @@ class OneContext with NavigatorController, OverlayController, DialogController {
   /// The almost top root context of the app,
   /// use it carefully or don't use it directly!
   BuildContext get context {
-    assert(
-        _context != null,
-        'OneContext not initiated! please use builder method.'
-        '\n\nYou need to use the OneContext().builder function to be able to show dialogs and overlays! e.g. ->'
-        '\n\n MaterialApp(\n    builder: OneContext().builder,'
-        '\n    ...'
-        '\n )');
+    assert(_context != null, NO_CONTEXT_ERROR);
     return _context;
   }
 
   static bool get hasContext => _context != null;
   set context(BuildContext newContext) => _context = newContext;
 
-  // MediaQuery, Theme and FocusScope
+  /// If you need reactive changes, do not use OneContext().mediaQuery
+  /// Use `MediaQuery.of(context)` instead.
   MediaQueryData get mediaQuery => MediaQuery.of(context);
+
+  /// If you need reactive changes, do not use OneContext().theme
+  /// Use `Theme.of(context)` instead.
   ThemeData get theme => Theme.of(context);
+
+  /// If you need reactive changes, do not use OneContext().textTheme
+  /// Use `Theme.of(context).textTheme` instead.
   TextTheme get textTheme => theme.textTheme;
   FocusScopeNode get focusScope => FocusScope.of(context);
 
-  // Locale
+  /// Locale
   Locale get locale => Localizations.localeOf(context);
 
   // ThemeMode and ThemeData
@@ -149,3 +150,23 @@ class ParentContextWidget extends StatelessWidget {
     );
   }
 }
+
+const String NO_CONTEXT_ERROR = """
+  OneContext not initiated! please use builder method.
+  You need to use the OneContext().builder function to be able to show dialogs and overlays! e.g. ->
+
+  MaterialApp(
+    builder: OneContext().builder,
+    ...
+  )
+
+  If you already set the OneContext().builder early, maybe you are probably trying to use some methods that will only be available after the first MaterialApp build.
+  OneContext needs to be initialized by MaterialApp before it can be used in the application. This error exception occurs when OneContext context has not yet loaded and you try to use some method that needs the context, such as the showDialog, dismissSnackBar, showSnackBar, showModalBottomSheet, showBottomSheet or popDialog methods.
+
+  If you need to use any of these OneContext methods before defining the MaterialApp, a safe way is to check if the OneContext context has already been initialized.
+  e.g. 
+
+  ```dart
+    if (OneContext.hasContext) {OneContext ().showDialog (...);}
+  ```
+""";

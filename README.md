@@ -184,6 +184,7 @@ OneContext().removeOverlay(myCustomAndAwesomeOverlayId);
 
 ## 🎨 Changing Dark and Light theme mode
 #### Breaking change: OneHotReload becomes OneNotification
+#### ⚠ Please check consideration on Theme and MediaQuery topic
 ```dart
 OneNotification<OneThemeChangerEvent>(
   stopBubbling: true, // avoid bubbling to ancestors
@@ -210,8 +211,6 @@ OneContext().oneTheme.changeDarkThemeData(
 ```
 
 ## 🚧 Reload, Restart and Reboot the app (Need bubbling events or data?)
-
-#### The concept of using Notifications:
 #### First define the data type in type generics, after that, you can rebuild multiple ancestors widgets that listen the same data type. This is used for the package in this example, to change ThemeMode and Locale and even Restart the app entirely.
 
 ```dart
@@ -295,6 +294,38 @@ OnePlatform.reboot(
 print('Platform: ' + OneContext().theme.platform); // TargetPlatform.iOS
 print('Orientation: ' + OneContext().mediaQuery.orientation); // Orientation.portrait
 ```
+[IMPORTANT] If you need get widget rebuild on theme data changes using `OneContext().oneTheme.toggleMode();`, please consider to use the traditional way `Theme.of(context)` when getting theme data inside widget.
+
+```dart
+@override
+  Widget build(BuildContext context) {
+
+    return Container(
+      color: Theme.of(context).primaryColor, // Theme.of(context)
+      height: 100,
+      width: 100,
+    );
+  }
+
+```
+#### Or you can call `Theme.of(context);` in the begining of `build` method instead;
+e.g.
+```dart
+@override
+  Widget build(BuildContext context) {
+    
+    // Get changes by you currently context, and ensure the rebuild on theme data changes on
+    // OneContext().oneTheme.toggleMode(), OneContext().oneTheme.changeDarkThemeData() or OneContext().oneTheme.changeThemeData() events.
+    Theme.of(context);
+
+    return Container(
+      color: OneContext().theme.primaryColor, // OneContext().theme
+      height: 100,
+      width: 100,
+    );
+  }
+
+```
 
 ## ⚠  Important: Configure MaterialApp. e.g.
 ```dart
@@ -307,20 +338,18 @@ return MaterialApp(
 );
 ```
 
-### In initState (Can not show dialog if markNeedsBuild, so schedule to next frame)
+### In initState or inside class constructor (now it's possible)
 ```dart
 @override
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback(
-      (duration) => OneContext().showDialog(
+    OneContext().showDialog(
         builder: (_) => AlertDialog(
           title: new Text("On Page Load"),
           content: new Text("Hello World!"),
         ),
-      ),
-    );
+      );
 ```
 
 

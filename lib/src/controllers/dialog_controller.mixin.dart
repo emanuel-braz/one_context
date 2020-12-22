@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:one_context/src/controllers/one_context.dart';
 import 'package:flutter/material.dart';
 
@@ -7,6 +8,7 @@ mixin DialogController {
   /// Return dialog utility class `DialogController`
   DialogController get dialog => this;
 
+  /// The current context
   BuildContext get context => OneContext().context;
 
   Future<T> Function<T>(
@@ -37,9 +39,9 @@ mixin DialogController {
   Future<T> showDialog<T>(
       {@required Widget Function(BuildContext) builder,
       bool barrierDismissible = true,
-      bool useRootNavigator = true}) {
+      bool useRootNavigator = true}) async {
     assert(builder != null);
-
+    if (!(await _contextLoaded())) return null;
     return _showDialog<T>(
       builder: builder,
       barrierDismissible: barrierDismissible,
@@ -47,13 +49,40 @@ mixin DialogController {
     );
   }
 
+  /// ## To be removed
   /// Dismiss a [SnackBar] at the bottom of the scaffold.
-  void dismissSnackBar() => Scaffold.of(context).hideCurrentSnackBar();
+  /// Use `hideCurrentSnackBar` instead.
+  @deprecated
+  void dismissSnackBar(
+      {SnackBarClosedReason reason = SnackBarClosedReason.hide}) async {
+    if (!(await _contextLoaded())) return;
+    Scaffold.of(context).hideCurrentSnackBar(reason: reason);
+  }
+
+  /// Removes the current [SnackBar] by running its normal exit animation.
+  ///
+  /// The closed completer is called after the animation is complete.
+  void hideCurrentSnackBar(
+      {SnackBarClosedReason reason = SnackBarClosedReason.hide}) async {
+    if (!(await _contextLoaded())) return;
+    Scaffold.of(context).hideCurrentSnackBar(reason: reason);
+  }
+
+  /// Removes the current [SnackBar] (if any) immediately.
+  ///
+  /// The removed snack bar does not run its normal exit animation. If there are
+  /// any queued snack bars, they begin their entrance animation immediately.
+  void removeCurrentSnackBar(
+      {SnackBarClosedReason reason = SnackBarClosedReason.hide}) async {
+    if (!(await _contextLoaded())) return;
+    Scaffold.of(context).removeCurrentSnackBar(reason: reason);
+  }
 
   /// Shows a [SnackBar] at the bottom of the scaffold.
-  ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBar(
-      {@required SnackBar Function(BuildContext) builder}) {
+  Future<ScaffoldFeatureController<SnackBar, SnackBarClosedReason>>
+      showSnackBar({@required SnackBar Function(BuildContext) builder}) async {
     assert(builder != null);
+    if (!(await _contextLoaded())) return null;
     return _showSnackBar(builder);
   }
 
@@ -69,8 +98,9 @@ mixin DialogController {
       Clip clipBehavior,
       bool isScrollControlled = false,
       bool useRootNavigator = false,
-      bool isDismissible = true}) {
+      bool isDismissible = true}) async {
     assert(builder != null);
+    if (!(await _contextLoaded())) return null;
     return _showModalBottomSheet<T>(
         builder: builder,
         backgroundColor: backgroundColor,
@@ -87,13 +117,14 @@ mixin DialogController {
   ///
   /// Returns a controller that can be used to close and otherwise manipulate the
   /// bottom sheet.
-  PersistentBottomSheetController<T> showBottomSheet<T>(
+  Future<PersistentBottomSheetController<T>> showBottomSheet<T>(
       {@required Widget Function(BuildContext) builder,
       Color backgroundColor,
       double elevation,
       ShapeBorder shape,
-      Clip clipBehavior}) {
+      Clip clipBehavior}) async {
     assert(builder != null);
+    if (!(await _contextLoaded())) return null;
     return _showBottomSheet<T>(
         builder: builder,
         backgroundColor: backgroundColor,
@@ -137,7 +168,16 @@ mixin DialogController {
   }
 
   /// Pop the top-most dialog off the OneContext.dialog.
-  popDialog<T extends Object>([T result]) {
+  popDialog<T extends Object>([T result]) async {
+    if (!(await _contextLoaded())) return;
     return Navigator.of(context).pop<T>(result);
+  }
+
+  Future<bool> _contextLoaded() async {
+    await Future.delayed(Duration.zero);
+    if (!OneContext.hasContext && !kReleaseMode) {
+      throw NO_CONTEXT_ERROR;
+    }
+    return OneContext.hasContext;
   }
 }
