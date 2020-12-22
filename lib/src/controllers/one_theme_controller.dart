@@ -32,6 +32,12 @@ class OneThemeController {
 
   static ThemeMode _defaultMode = ThemeMode.light;
 
+  /// Get the last theme mode loaded in storage
+  Future<ThemeMode> get lastThemeMode async {
+    if (await _isDarkModeFromStorage()) return ThemeMode.dark;
+    return ThemeMode.light;
+  }
+
   static ThemeData _themeData;
   ThemeData get themeData => _themeData;
   static ThemeData initThemeData(ThemeData themeData) {
@@ -77,8 +83,9 @@ class OneThemeController {
   Future<void> loadThemeMode() async {
     final bool darkMode = await _isDarkModeFromStorage();
     _themeMode = darkMode ? ThemeMode.dark : ThemeMode.light;
-    OneContext().oneNotifier.notify(OneContext().context,
-        NotificationPayload(data: OneThemeChangerEvent()));
+    if (OneContext.hasContext)
+      OneContext().oneNotifier.notify(OneContext().context,
+          NotificationPayload(data: OneThemeChangerEvent()));
   }
 
   Future<void> toggleMode([bool save = true]) async {

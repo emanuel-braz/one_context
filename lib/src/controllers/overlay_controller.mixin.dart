@@ -38,14 +38,16 @@ mixin OverlayController {
   // ignore: missing_return
   String addOverlay(
       {@required String overlayId,
-      @required Widget Function(BuildContext context) builder}) {
+      @required Widget Function(BuildContext context) builder,
+      OverlayEntry below,
+      OverlayEntry above}) {
     assert(builder != null);
     assert(overlayId != null);
 
     Future.delayed(Duration.zero, () {
       OverlayState overlayState = Overlay.of(OneContext().context);
       OverlayEntry overlayEntry = OverlayEntry(builder: builder);
-      overlayState.insert(overlayEntry);
+      overlayState.insert(overlayEntry, above: above, below: below);
       _overlays.putIfAbsent(overlayId, () => overlayEntry);
       return overlayId;
     });
@@ -65,6 +67,49 @@ mixin OverlayController {
   removeAllOverlays() {
     _overlays.keys.forEach((key) => removeOverlay(key));
     _overlays = Map<String, OverlayEntry>();
+  }
+
+  /// Get OverlayEntry by id, if overlay with this id exists,
+  /// else it will return null
+  OverlayEntry getOverlayById(String id) {
+    if (_overlays.containsKey(id)) {
+      return _overlays[id];
+    }
+    return null;
+  }
+
+  /// Remove all the entries listed in the given iterable, then reinsert them
+  /// into the overlay in the given order.
+  ///
+  /// Entries mention in `newEntries` but absent from the overlay are inserted
+  /// as if with [insertAll].
+  ///
+  /// Entries not mentioned in `newEntries` but present in the overlay are
+  /// positioned as a group in the resulting list relative to the entries that
+  /// were moved, as specified by one of `below` or `above`, which, if
+  /// specified, must be one of the entries in `newEntries`:
+  ///
+  /// If `below` is non-null, the group is positioned just below `below`.
+  /// If `above` is non-null, the group is positioned just above `above`.
+  /// Otherwise, the group is left on top, with all the rearranged entries
+  /// below.
+  ///
+  /// It is an error to specify both `above` and `below`.
+  void rearrange(Iterable<OverlayEntry> newEntries,
+      {OverlayEntry below, OverlayEntry above}) {
+    OverlayState overlayState = Overlay.of(OneContext().context);
+    overlayState.rearrange(newEntries, below: below, above: above);
+  }
+
+  /// (DEBUG ONLY) Check whether a given entry is visible (i.e., not behind an
+  /// opaque entry).
+  ///
+  /// This is an O(N) algorithm, and should not be necessary except for debug
+  /// asserts. To avoid people depending on it, this function is implemented
+  /// only in debug mode, and always returns false in release mode.
+  bool debugIsVisible(OverlayEntry entry) {
+    OverlayState overlayState = Overlay.of(OneContext().context);
+    return overlayState.debugIsVisible(entry);
   }
 
   /// Show circular progress indicator, or a custom widget.

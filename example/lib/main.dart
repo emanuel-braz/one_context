@@ -12,6 +12,7 @@ void main() => OnePlatform.app = () => MyApp();
 class MyApp extends StatelessWidget {
   MyApp() {
     print('MyApp loaded!');
+
     debugShowCheckedModeBanner = true;
 
     // Reseting light theme
@@ -48,13 +49,14 @@ class MyApp extends StatelessWidget {
             builder: (context, data) {
               return MaterialApp(
                 debugShowCheckedModeBanner: debugShowCheckedModeBanner,
-
                 // Configure reactive theme mode and theme data (needs OneNotification above in the widget tree)
                 themeMode: OneThemeController.initThemeMode(ThemeMode.light),
                 theme: OneThemeController.initThemeData(ThemeData(
-                    primarySwatch: Colors.green, brightness: Brightness.light)),
-                darkTheme: OneThemeController.initDarkThemeData(
-                    ThemeData(brightness: Brightness.dark)),
+                    primarySwatch: Colors.green,
+                    primaryColor: Colors.green,
+                    brightness: Brightness.light)),
+                darkTheme: OneThemeController.initDarkThemeData(ThemeData(
+                    brightness: Brightness.dark, primaryColor: Colors.blue)),
 
                 // Configure [OneContext] to dialogs, overlays, snackbars, and ThemeMode
                 builder: OneContext().builder,
@@ -63,7 +65,7 @@ class MyApp extends StatelessWidget {
                 // Set navigator key in order to navigate
                 navigatorKey: OneContext().key,
 
-                // [data] comes through events
+                // [data] it comes through events
                 supportedLocales: dataLocale ?? [const Locale('en', '')],
 
                 title: 'OneContext Demo',
@@ -71,6 +73,15 @@ class MyApp extends StatelessWidget {
                   title: 'OneContext Demo',
                 ),
                 routes: {'/second': (context) => SecondPage()},
+                // onGenerateRoute: (settings) {
+                // if (settings.name == SecondPage.routeName) {
+                //   return MaterialPageRoute(
+                //     builder: (context) {
+                //       return SecondPage();
+                //       },
+                //   );
+                // }
+                // },
               );
             });
       },
@@ -89,7 +100,7 @@ class MyApp2 extends StatelessWidget {
     return MaterialApp(
         theme: ThemeData(primarySwatch: Colors.pink),
         title: 'OneContext Demo',
-        home: MyHomePage2(title: 'BOOT A NEW APPLICATION'),
+        home: MyHomePage2(title: 'A NEW APPLICATION'),
         routes: {'/second': (context) => SecondPage()},
         builder: OneContext().builder,
         navigatorKey: OneContext().key);
@@ -175,7 +186,16 @@ class _MyHomePageState extends State<MyHomePage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title:
+            Text(widget.title + ' - ' + debugShowCheckedModeBanner.toString()),
+        actions: <Widget>[
+          Switch(
+              activeColor: Colors.blue,
+              value: debugShowCheckedModeBanner,
+              onChanged: (_) {
+                debugShowCheckedModeBanner = !debugShowCheckedModeBanner;
+              })
+        ],
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -186,18 +206,8 @@ class _MyHomePageState extends State<MyHomePage>
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              SizedBox(height: 20),
               RaisedButton(
-                child: Text(
-                    'Soft Reload (ShowModeBanner = $debugShowCheckedModeBanner)'),
-                onPressed: () {
-                  debugShowCheckedModeBanner = !debugShowCheckedModeBanner;
-                  OneNotification.softReloadRoot(
-                      context); // It will visit ancestors till the root OneNotificationBuilder widget)
-                },
-              ),
-              RaisedButton(
-                child: Text('Hard Reload'),
+                child: Text(' Hard Reload'),
                 onPressed: () {
                   OneNotification.hardReloadRoot(context);
                 },
@@ -209,7 +219,7 @@ class _MyHomePageState extends State<MyHomePage>
                 },
               ),
               RaisedButton(
-                child: Text('Setup and Hard Reeboot'),
+                child: Text('Hard Reeboot'),
                 onPressed: () {
                   OnePlatform.reboot(
                       builder: () => MyApp(),
@@ -268,7 +278,7 @@ class _MyHomePageState extends State<MyHomePage>
                 onPressed: () {
                   showTipsOnScreen('OneContext().showSnackBar()');
                   OneContext()
-                      .dismissSnackBar(); // Dismiss snackbar before show another ;)
+                      .hideCurrentSnackBar(); // Dismiss snackbar before show another ;)
                   OneContext().showSnackBar(
                       builder: (context) => SnackBar(
                             content: Text(
@@ -561,6 +571,26 @@ class _MyHomePageState extends State<MyHomePage>
 }
 
 class SecondPage extends StatelessWidget {
+  SecondPage() {
+    OneContext()
+        .showDialog(
+            builder: (_) => AlertDialog(
+                  content: Text(
+                      'Dialog opened from constructor of StatelessWidget SecondPage!'),
+                  actions: [
+                    RaisedButton(
+                        color: OneContext().theme.primaryColor,
+                        child: Text('Close'),
+                        onPressed: () {
+                          OneContext().popDialog("Nice!");
+                        })
+                  ],
+                ))
+        .then((result) => print(result));
+  }
+
+  static String routeName = "SecondPage";
+
   @override
   Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(),

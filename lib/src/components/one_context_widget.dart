@@ -21,6 +21,7 @@ class _OneContextWidgetState extends State<OneContextWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Builder(
         builder: (innerContext) {
           OneContext().context = innerContext;
