@@ -1,3 +1,4 @@
+import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter/material.dart';
 import 'package:one_context/src/controllers/one_context.dart';
 
@@ -16,6 +17,21 @@ class _OneContextWidgetState extends State<OneContextWidget> {
         showSnackBar: _showSnackBar,
         showModalBottomSheet: _showModalBottomSheet,
         showBottomSheet: _showBottomSheet);
+    BackButtonInterceptor.add(myInterceptor);
+  }
+
+  @override
+  void dispose() {
+    BackButtonInterceptor.remove(myInterceptor);
+    super.dispose();
+  }
+
+   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
+    if (OneContext().hasDialogVisible) {
+      OneContext().popDialog();      
+      return true;
+    }
+    return false;
   }
 
   @override

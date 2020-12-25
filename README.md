@@ -1,3 +1,5 @@
+[![Fork](https://img.shields.io/github/forks/emanuel-braz/one_context?style=social)](https://github.com/emanuel-braz/one_context/fork) &nbsp; [![Star](https://img.shields.io/github/stars/emanuel-braz/one_context?style=social)](https://github.com/emanuel-braz/one_context/stargazers) &nbsp; [![Watches](https://img.shields.io/github/watchers/emanuel-braz/one_context?style=social)](https://github.com/emanuel-braz/one_context/) 
+
 [![Pub Version](https://img.shields.io/pub/v/one_context?color=%2302569B&label=pub&logo=flutter)](https://pub.dev/packages/one_context) ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
 
 

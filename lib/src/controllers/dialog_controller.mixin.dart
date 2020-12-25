@@ -3,16 +3,38 @@ import 'package:one_context/src/controllers/one_context.dart';
 import 'package:flutter/material.dart';
 
 typedef Widget DialogBuilder(BuildContext context);
-
 mixin DialogController {
+
   /// Return dialog utility class `DialogController`
   DialogController get dialog => this;
 
   /// The current context
   BuildContext? get context => OneContext().context;
 
+  ValueNotifier<List<Widget>> _dialogs = ValueNotifier([]);
+  ValueNotifier<List<Widget>> get dialogNotifier => _dialogs;
+  bool get hasDialogVisible => _dialogs.value.length > 0;
+
+  void addDialogVisible(Widget widget) {
+    _dialogs.value.add(widget);
+  }
+
+  void removeDialogVisible({Widget? widget}) {
+    if (widget != null){
+      _dialogs.value.remove(widget);
+    } else _dialogs.value.removeLast();
+  }
+
+  /// ## Please, do not use this method!
+  /// It's is a provisional implementation and there is no annotation for that
+  /// in Dart 2, so I used the `@deprecated` instead, in order to keep the compatibility
+  @deprecated
+  void resetDialogRegisters() {    
+    _dialogs.value.clear();
+  }
+
   Future<T?> Function<T>(
-      {bool barrierDismissible,
+      {bool? barrierDismissible,
       required Widget Function(BuildContext) builder,
       bool useRootNavigator})? _showDialog;
   Future<T?> Function<T>(
@@ -41,11 +63,17 @@ mixin DialogController {
       bool barrierDismissible = true,
       bool useRootNavigator = true}) async {
     if (!(await _contextLoaded())) return null;
+
+    Widget dialog = builder(context!);
+    if (barrierDismissible == true) addDialogVisible(dialog);
+    
     return _showDialog!<T>(
-      builder: builder,
+      builder: (_) => dialog,
       barrierDismissible: barrierDismissible,
       useRootNavigator: useRootNavigator,
-    );
+    ).whenComplete(() {
+      if (barrierDismissible == true) removeDialogVisible(widget: dialog);
+    });
   }
 
   /// ## To be removed
