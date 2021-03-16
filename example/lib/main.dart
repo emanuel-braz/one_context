@@ -67,21 +67,22 @@ class MyApp extends StatelessWidget {
 
                 // [data] it comes through events
                 supportedLocales: dataLocale ?? [const Locale('en', '')],
+                // supportedLocales: dataLocale ?? [const Locale('en', '')],
 
                 title: 'OneContext Demo',
                 home: MyHomePage(
                   title: 'OneContext Demo',
                 ),
-                routes: {'/second': (context) => SecondPage()},
-                // onGenerateRoute: (settings) {
-                // if (settings.name == SecondPage.routeName) {
-                //   return MaterialPageRoute(
-                //     builder: (context) {
-                //       return SecondPage();
-                //       },
-                //   );
-                // }
-                // },
+                // routes: {'/second': (context) => SecondPage()},
+                onGenerateRoute: (settings) {
+                  if (settings.name == SecondPage.routeName) {
+                    return MaterialPageRoute<String>(
+                      builder: (context) {
+                        return SecondPage();
+                      },
+                    );
+                  }
+                },
               );
             });
       },
@@ -108,8 +109,8 @@ class MyApp2 extends StatelessWidget {
 }
 
 class MyHomePage2 extends StatefulWidget {
-  MyHomePage2({Key key, this.title}) : super(key: key);
-  final String title;
+  MyHomePage2({this.title, Key? key}) : super(key: key);
+  final String? title;
   @override
   _MyHomePage2State createState() => _MyHomePage2State();
 }
@@ -119,7 +120,7 @@ class _MyHomePage2State extends State<MyHomePage2> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(widget.title ?? ""),
       ),
       body: Container(
         color: Colors.pink,
@@ -127,7 +128,7 @@ class _MyHomePage2State extends State<MyHomePage2> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            RaisedButton(
+            ElevatedButton(
                 child: Text('COME BACK TO THE OLD APP'),
                 onPressed: () {
                   OnePlatform.reboot(
@@ -137,7 +138,7 @@ class _MyHomePage2State extends State<MyHomePage2> {
                     builder: () => MyApp(),
                   );
                 }),
-            RaisedButton(
+            ElevatedButton(
                 child: Text('Navigate to Second Page'),
                 onPressed: () {
                   OneContext().pushNamed('/second');
@@ -150,8 +151,8 @@ class _MyHomePage2State extends State<MyHomePage2> {
 }
 
 class MyHomePage extends StatefulWidget {
-  final String reloadAppButtonLabel;
-  MyHomePage({Key key, this.title, this.reloadAppButtonLabel})
+  final String? reloadAppButtonLabel;
+  MyHomePage({Key? key, this.title = "", this.reloadAppButtonLabel})
       : super(key: key);
   final String title;
   @override
@@ -161,8 +162,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage>
     with SingleTickerProviderStateMixin {
   Map<String, Offset> randomOffset = Map<String, Offset>();
-  AnimationController _controller;
-  Animation<Offset> _offsetAnimation;
+  late AnimationController _controller;
+  late Animation<Offset> _offsetAnimation;
 
   @override
   void initState() {
@@ -206,19 +207,19 @@ class _MyHomePageState extends State<MyHomePage>
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              RaisedButton(
+              ElevatedButton(
                 child: Text(' Hard Reload'),
                 onPressed: () {
                   OneNotification.hardReloadRoot(context);
                 },
               ),
-              RaisedButton(
+              ElevatedButton(
                 child: Text('Soft Reeboot the app'),
                 onPressed: () {
                   OnePlatform.reboot(setUp: () => print('Reboot the app!'));
                 },
               ),
-              RaisedButton(
+              ElevatedButton(
                 child: Text('Hard Reeboot'),
                 onPressed: () {
                   OnePlatform.reboot(
@@ -232,7 +233,7 @@ class _MyHomePageState extends State<MyHomePage>
                       });
                 },
               ),
-              RaisedButton(
+              ElevatedButton(
                 child: Text('Load another app'),
                 onPressed: () {
                   OnePlatform.reboot(
@@ -242,7 +243,7 @@ class _MyHomePageState extends State<MyHomePage>
                       builder: () => MyApp2());
                 },
               ),
-              RaisedButton(
+              ElevatedButton(
                 child: Text('Change ThemeData Light'),
                 onPressed: () {
                   OneContext().oneTheme.changeThemeData(ThemeData(
@@ -250,7 +251,7 @@ class _MyHomePageState extends State<MyHomePage>
                       brightness: Brightness.light));
                 },
               ),
-              RaisedButton(
+              ElevatedButton(
                 child: Text('Change ThemeData Dark'),
                 onPressed: () {
                   OneContext().oneTheme.changeDarkThemeData(ThemeData(
@@ -258,13 +259,13 @@ class _MyHomePageState extends State<MyHomePage>
                       brightness: Brightness.dark));
                 },
               ),
-              RaisedButton(
+              ElevatedButton(
                 child: Text('Toggle ThemeMode (Dark/Light)'),
                 onPressed: () {
                   OneContext().oneTheme.toggleMode();
                 },
               ),
-              RaisedButton(
+              ElevatedButton(
                 child: Text('Change to english locale support'),
                 onPressed: () {
                   OneNotification.notify<List<Locale>>(context,
@@ -273,7 +274,7 @@ class _MyHomePageState extends State<MyHomePage>
                       ]));
                 },
               ),
-              RaisedButton(
+              ElevatedButton(
                 child: Text('Show SnackBar'),
                 onPressed: () {
                   showTipsOnScreen('OneContext().showSnackBar()');
@@ -284,32 +285,31 @@ class _MyHomePageState extends State<MyHomePage>
                             content: Text(
                               'My awesome snackBar!',
                               textAlign: TextAlign.center,
-                              style: Theme.of(context)
+                              style: Theme.of(context!)
                                   .textTheme
-                                  .title
-                                  .copyWith(color: Colors.white),
+                                  .headline6
+                                  ?.copyWith(color: Colors.white),
                             ),
                             action: SnackBarAction(
                                 label: 'DISMISS', onPressed: () {}),
                           ));
                 },
               ),
-              RaisedButton(
+              ElevatedButton(
                 child: Text('Show Dialog'),
                 onPressed: () async {
                   showTipsOnScreen('OneContext().showDialog<String>()');
 
                   var result = await OneContext().showDialog<String>(
-                      // Don't need context to show alertDialog
                       builder: (context) => AlertDialog(
                             title: new Text("The Title"),
                             content: new Text("The Body"),
                             actions: <Widget>[
-                              new FlatButton(
+                              new TextButton(
                                   child: new Text("OK"),
                                   onPressed: () =>
                                       OneContext().popDialog('ok')),
-                              new FlatButton(
+                              new TextButton(
                                   child: new Text("CANCEL"),
                                   onPressed: () =>
                                       OneContext().popDialog('cancel')),
@@ -318,7 +318,23 @@ class _MyHomePageState extends State<MyHomePage>
                   print(result);
                 },
               ),
-              RaisedButton(
+              // ElevatedButton(
+              //   child: Text('Show DatePicker'),
+              //   onPressed: () async {
+              //     showTipsOnScreen('OneContext().showDatePicker()');
+              //     DateTime selectedDate = DateTime.now();
+              //     OneContext()
+              //         .showDatePicker(
+              //             initialDate: selectedDate,
+              //             firstDate: DateTime(2015, 8),
+              //             lastDate: DateTime(2101))
+              //         .then((picked) => {
+              //               if (picked != null && picked != selectedDate)
+              //                 print(picked)
+              //             });
+              //   },
+              // ),
+              ElevatedButton(
                 child: Text('Show modalBottomSheet'),
                 onPressed: () async {
                   showTipsOnScreen(
@@ -345,7 +361,7 @@ class _MyHomePageState extends State<MyHomePage>
                   print(result);
                 },
               ),
-              RaisedButton(
+              ElevatedButton(
                 child: Text('Show bottomSheet'),
                 onPressed: () {
                   showTipsOnScreen('OneContext().showBottomSheet()');
@@ -367,7 +383,7 @@ class _MyHomePageState extends State<MyHomePage>
                   );
                 },
               ),
-              RaisedButton(
+              ElevatedButton(
                   child: Text('Show and block till input'),
                   onPressed: () async {
                     showTipsOnScreen('OneContext().showDialog<int>()');
@@ -403,7 +419,7 @@ class _MyHomePageState extends State<MyHomePage>
                         break;
                     }
                   }),
-              RaisedButton(
+              ElevatedButton(
                 child: Text('Show default progress indicator'),
                 onPressed: () {
                   showTipsOnScreen('OneContext().showProgressIndicator()');
@@ -413,7 +429,7 @@ class _MyHomePageState extends State<MyHomePage>
                       () => OneContext().hideProgressIndicator());
                 },
               ),
-              RaisedButton(
+              ElevatedButton(
                 child: Text('Show progress indicator colored'),
                 onPressed: () {
                   showTipsOnScreen(
@@ -425,7 +441,7 @@ class _MyHomePageState extends State<MyHomePage>
                       () => OneContext().hideProgressIndicator());
                 },
               ),
-              RaisedButton(
+              ElevatedButton(
                 child: Text('Show custom progress indicator'),
                 onPressed: () {
                   showTipsOnScreen(
@@ -449,7 +465,7 @@ class _MyHomePageState extends State<MyHomePage>
                       () => OneContext().hideProgressIndicator());
                 },
               ),
-              RaisedButton(
+              ElevatedButton(
                 child: Text('Show custom animated indicator'),
                 onPressed: () {
                   showTipsOnScreen(
@@ -480,7 +496,7 @@ class _MyHomePageState extends State<MyHomePage>
                   });
                 },
               ),
-              RaisedButton(
+              ElevatedButton(
                 child: Text('Add a generic overlay'),
                 onPressed: () {
                   showTipsOnScreen('OneContext().addOverlay(builder)');
@@ -494,19 +510,28 @@ class _MyHomePageState extends State<MyHomePage>
                       .toDouble();
                   randomOffset.putIfAbsent(
                       overId, () => Offset(getX(), getY()));
-                  Widget w = RaisedButton(
+                  Widget w = ElevatedButton(
                       child: Text(
                         'CLOSE OR DRAG',
                         style: TextStyle(color: Colors.white),
                       ),
-                      color: Colors.blue,
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.resolveWith<Color>(
+                          (Set<MaterialState> states) {
+                            if (states.contains(MaterialState.pressed))
+                              return Colors.green;
+                            return Colors.blue; // Use the component's default.
+                          },
+                        ),
+                      ),
                       onPressed: () {
                         OneContext().removeOverlay(overId);
                       });
                   OneContext().addOverlay(
                       builder: (_) => Positioned(
-                          top: randomOffset[overId].dy,
-                          left: randomOffset[overId].dx,
+                          top: randomOffset[overId]?.dy,
+                          left: randomOffset[overId]?.dx,
                           child: Draggable(
                             onDragEnd: (DraggableDetails detail) =>
                                 randomOffset[overId] = detail.offset,
@@ -517,24 +542,26 @@ class _MyHomePageState extends State<MyHomePage>
                       overlayId: overId);
                 },
               ),
-              RaisedButton(
+              ElevatedButton(
                 child: Text('Push a second page (push)'),
                 onPressed: () async {
                   showTipsOnScreen('OneContext().push()');
-                  String result = await OneContext().push<String>(
+                  String? result = await OneContext().push<String>(
                       MaterialPageRoute(builder: (_) => SecondPage()));
                   print('$result from OneContext().push()');
                 },
               ),
-              RaisedButton(
+              ElevatedButton(
                 child: Text('Push a second page (pushNamed)'),
                 onPressed: () async {
                   showTipsOnScreen('OneContext().pushNamed()');
-                  Object result = await OneContext().pushNamed('/second');
+                  // var result = (await OneContext().pushNamed('/second'));
+                  String? result =
+                      (await Navigator.of(context).pushNamed('/second'));
                   print('$result from OneContext().pushNamed()');
                 },
               ),
-              RaisedButton(
+              ElevatedButton(
                 child: Text('Show MediaQuery info'),
                 onPressed: () async {
                   MediaQueryData mediaQuery = OneContext().mediaQuery;
@@ -549,14 +576,14 @@ class _MyHomePageState extends State<MyHomePage>
                   showTipsOnScreen(info, size: 200, seconds: 5);
                 },
               ),
-              RaisedButton(
+              ElevatedButton(
                 child: Text('Show Theme info'),
                 onPressed: () async {
                   ThemeData theme = OneContext().theme;
                   String info = 'platform: ${theme.platform}\n'
                       'primaryColor: ${theme.primaryColor}\n'
                       'accentColor: ${theme.accentColor}\n'
-                      'title.color: ${theme.textTheme.title.color}';
+                      'title.color: ${theme.textTheme.headline6?.color}';
                   print(info);
                   showTipsOnScreen(info, size: 200, seconds: 5);
                 },
@@ -571,6 +598,7 @@ class _MyHomePageState extends State<MyHomePage>
 }
 
 class SecondPage extends StatelessWidget {
+  static String routeName = "/second";
   SecondPage() {
     OneContext()
         .showDialog(
@@ -578,8 +606,10 @@ class SecondPage extends StatelessWidget {
                   content: Text(
                       'Dialog opened from constructor of StatelessWidget SecondPage!'),
                   actions: [
-                    RaisedButton(
-                        color: OneContext().theme.primaryColor,
+                    ElevatedButton(
+                        style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all(Colors.blue)),
                         child: Text('Close'),
                         onPressed: () {
                           OneContext().popDialog("Nice!");
@@ -589,8 +619,6 @@ class SecondPage extends StatelessWidget {
         .then((result) => print(result));
   }
 
-  static String routeName = "SecondPage";
-
   @override
   Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(),
@@ -599,7 +627,7 @@ class SecondPage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text('Second Page'),
-          RaisedButton(
+          ElevatedButton(
             child: Text('Go Back - pop("success")'),
             onPressed: () {
               // showTipsOnScreen('OneContext().pop("success")');
@@ -611,7 +639,7 @@ class SecondPage extends StatelessWidget {
 }
 
 // Dont need context, so features can be create in any place ;)
-void showTipsOnScreen(String text, {double size, int seconds}) {
+void showTipsOnScreen(String text, {double? size, int? seconds}) {
   String id = UniqueKey().toString();
   OneContext().addOverlay(
     overlayId: id,
@@ -621,7 +649,7 @@ void showTipsOnScreen(String text, {double size, int seconds}) {
           alignment: Alignment.bottomCenter,
           padding: EdgeInsets.symmetric(
               horizontal: kFloatingActionButtonMargin, vertical: 8),
-          child: FlatButton(
+          child: TextButton(
             onPressed: null,
             child: Text(
               text,
