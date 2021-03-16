@@ -1,3 +1,6 @@
+## [1.0.0] - Mar 16, 2021 ( Flutter 2.0.2 • Null safety)
+* Migrate to null-safety.
+
 ## [0.5.0] - Dec 22, 2020 ( Flutter 1.22.5 • channel stable )
 * Fix Scaffold logic
 * Breaking changes on OneContext().showSnackBar (now it returns a `Future`)

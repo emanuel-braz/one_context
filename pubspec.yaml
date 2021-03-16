@@ -1,16 +1,16 @@
 name: one_context
 description: OneContext provides a simple way to deal with Dialogs, Overlays, Navigations, Theme* and MediaQuery* with no need of BuildContext.
-version: 0.5.0
+version: 1.0.0
 author: Emanuel Braz - fastencoding@gmail.com
 homepage: https://github.com/emanuel-braz/one_context.git
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  shared_preferences: ^0.5.7+3
+  shared_preferences: ^2.0.4
 
 dev_dependencies:
   flutter_test:
