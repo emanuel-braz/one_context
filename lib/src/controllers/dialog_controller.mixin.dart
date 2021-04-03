@@ -25,11 +25,14 @@ mixin DialogController {
       _dialogs.value.removeLast();
   }
 
-  /// ## Please, do not use this method!
-  /// It's is a provisional implementation and there is no annotation for that
-  /// in Dart 2, so I used the `@deprecated` instead, in order to keep the compatibility
-  @deprecated
-  void resetDialogRegisters() {
+  void popAllDialogs(){
+    _dialogs.value.forEach((element) {
+      OneContext().popDialog();
+    });
+    _resetDialogRegisters();
+  }
+
+  void _resetDialogRegisters() {
     _dialogs.value.clear();
   }
 
