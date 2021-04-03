@@ -3,7 +3,6 @@ import 'package:one_context/src/controllers/one_context.dart';
 import 'package:flutter/material.dart';
 
 typedef Widget DialogBuilder(BuildContext context);
-
 mixin DialogController {
   /// Return dialog utility class `DialogController`
   DialogController get dialog => this;
@@ -11,8 +10,34 @@ mixin DialogController {
   /// The current context
   BuildContext? get context => OneContext().context;
 
+  ValueNotifier<List<Widget>> _dialogs = ValueNotifier([]);
+  ValueNotifier<List<Widget>> get dialogNotifier => _dialogs;
+  bool get hasDialogVisible => _dialogs.value.length > 0;
+
+  void addDialogVisible(Widget widget) {
+    _dialogs.value.add(widget);
+  }
+
+  void removeDialogVisible({Widget? widget}) {
+    if (widget != null) {
+      _dialogs.value.remove(widget);
+    } else
+      _dialogs.value.removeLast();
+  }
+
+  void popAllDialogs() {
+    _dialogs.value.forEach((element) {
+      OneContext().popDialog();
+    });
+    _resetDialogRegisters();
+  }
+
+  void _resetDialogRegisters() {
+    _dialogs.value.clear();
+  }
+
   Future<T?> Function<T>(
-      {bool barrierDismissible,
+      {bool? barrierDismissible,
       required Widget Function(BuildContext) builder,
       bool useRootNavigator})? _showDialog;
   Future<T?> Function<T>(
@@ -41,11 +66,17 @@ mixin DialogController {
       bool barrierDismissible = true,
       bool useRootNavigator = true}) async {
     if (!(await _contextLoaded())) return null;
+
+    Widget dialog = builder(context!);
+    if (barrierDismissible == true) addDialogVisible(dialog);
+
     return _showDialog!<T>(
-      builder: builder,
+      builder: (_) => dialog,
       barrierDismissible: barrierDismissible,
       useRootNavigator: useRootNavigator,
-    );
+    ).whenComplete(() {
+      if (barrierDismissible == true) removeDialogVisible(widget: dialog);
+    });
   }
 
   /// ## To be removed
@@ -61,6 +92,7 @@ mixin DialogController {
   /// Removes the current [SnackBar] by running its normal exit animation.
   ///
   /// The closed completer is called after the animation is complete.
+  @deprecated
   void hideCurrentSnackBar(
       {SnackBarClosedReason reason = SnackBarClosedReason.hide}) async {
     if (!(await _contextLoaded())) return;
@@ -71,6 +103,7 @@ mixin DialogController {
   ///
   /// The removed snack bar does not run its normal exit animation. If there are
   /// any queued snack bars, they begin their entrance animation immediately.
+  @deprecated
   void removeCurrentSnackBar(
       {SnackBarClosedReason reason = SnackBarClosedReason.hide}) async {
     if (!(await _contextLoaded())) return;
@@ -98,15 +131,22 @@ mixin DialogController {
       bool useRootNavigator = false,
       bool isDismissible = true}) async {
     if (!(await _contextLoaded())) return null;
+
+    Widget dialog = builder(context!);
+    if (isDismissible == true) addDialogVisible(dialog);
+
     return _showModalBottomSheet!<T>(
-        builder: builder,
-        backgroundColor: backgroundColor,
-        clipBehavior: clipBehavior,
-        elevation: elevation,
-        isDismissible: isDismissible,
-        isScrollControlled: isScrollControlled,
-        shape: shape,
-        useRootNavigator: useRootNavigator);
+            builder: builder,
+            backgroundColor: backgroundColor,
+            clipBehavior: clipBehavior,
+            elevation: elevation,
+            isDismissible: isDismissible,
+            isScrollControlled: isScrollControlled,
+            shape: shape,
+            useRootNavigator: useRootNavigator)
+        .whenComplete(() {
+      if (isDismissible == true) removeDialogVisible(widget: dialog);
+    });
   }
 
   /// Shows a material design bottom sheet in the nearest [Scaffold] ancestor. If

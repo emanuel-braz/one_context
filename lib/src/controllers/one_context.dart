@@ -45,6 +45,10 @@ class OneContext with NavigatorController, OverlayController, DialogController {
   late OneNotificationController oneNotifier;
   late OneThemeController oneTheme;
 
+  HeroController heroController = HeroController(
+      createRectTween: (begin, end) =>
+          MaterialRectCenterArcTween(begin: begin, end: end));
+
   OneContext._private() {
     oneNotifier = OneNotificationController();
     oneTheme = OneThemeController();
@@ -167,6 +171,6 @@ const String NO_CONTEXT_ERROR = """
   e.g. 
 
   ```dart
-    if (OneContext.hasContext) {OneContext ().showDialog (...);}
+    if (OneContext.hasContext) {OneContext().showDialog (...);}
   ```
 """;

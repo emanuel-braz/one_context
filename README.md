@@ -1,3 +1,5 @@
+[![Fork](https://img.shields.io/github/forks/emanuel-braz/one_context?style=social)](https://github.com/emanuel-braz/one_context/fork) &nbsp; [![Star](https://img.shields.io/github/stars/emanuel-braz/one_context?style=social)](https://github.com/emanuel-braz/one_context/stargazers) &nbsp; [![Watches](https://img.shields.io/github/watchers/emanuel-braz/one_context?style=social)](https://github.com/emanuel-braz/one_context/) 
+
 [![Pub Version](https://img.shields.io/pub/v/one_context?color=%2302569B&label=pub&logo=flutter)](https://pub.dev/packages/one_context) ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
 
 
@@ -15,8 +17,6 @@
 ![one_context_demo](https://user-images.githubusercontent.com/3827308/81240561-13727000-8fde-11ea-8400-64e2b2861a87.gif)
   
 > BuildContext always is needed (in some cases we need to choose carefully the specific one to make things work as expected), but, to global things, like dialogs, it can be reached by OneContext package. 🎯
-
-### 🥳  Migrate to null-safety.
 
 ## 🎮  Let's start 
 
@@ -368,6 +368,6 @@ return MaterialApp(
 
 #### If you have any question about the project:
 
-Email-me: fastencoding@gmail.com
+Email-me: code@emanuelbraz.dev
 
 Connect with me at [LinkedIn](https://www.linkedin.com/in/emanuel-braz/).

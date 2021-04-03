@@ -1,3 +1,6 @@
+## [1.1.0] - April 3, 2021 ( Flutter 2.0.2 )
+* Close Dialog and ModalBottomSheets on back button tap (android)
+
 ## [1.0.0] - Mar 16, 2021 ( Flutter 2.0.2 • Null safety)
 * Migrate to null-safety.
 
