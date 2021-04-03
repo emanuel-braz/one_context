@@ -89,6 +89,7 @@ mixin DialogController {
   /// Removes the current [SnackBar] by running its normal exit animation.
   ///
   /// The closed completer is called after the animation is complete.
+  @deprecated
   void hideCurrentSnackBar(
       {SnackBarClosedReason reason = SnackBarClosedReason.hide}) async {
     if (!(await _contextLoaded())) return;
@@ -99,6 +100,7 @@ mixin DialogController {
   ///
   /// The removed snack bar does not run its normal exit animation. If there are
   /// any queued snack bars, they begin their entrance animation immediately.
+  @deprecated
   void removeCurrentSnackBar(
       {SnackBarClosedReason reason = SnackBarClosedReason.hide}) async {
     if (!(await _contextLoaded())) return;
@@ -126,6 +128,10 @@ mixin DialogController {
       bool useRootNavigator = false,
       bool isDismissible = true}) async {
     if (!(await _contextLoaded())) return null;
+
+    Widget dialog = builder(context!);
+    if (isDismissible == true) addDialogVisible(dialog);
+
     return _showModalBottomSheet!<T>(
         builder: builder,
         backgroundColor: backgroundColor,
@@ -134,7 +140,9 @@ mixin DialogController {
         isDismissible: isDismissible,
         isScrollControlled: isScrollControlled,
         shape: shape,
-        useRootNavigator: useRootNavigator);
+        useRootNavigator: useRootNavigator).whenComplete(() {
+      if (isDismissible == true) removeDialogVisible(widget: dialog);
+    });
   }
 
   /// Shows a material design bottom sheet in the nearest [Scaffold] ancestor. If
