@@ -26,9 +26,9 @@ class _OneContextWidgetState extends State<OneContextWidget> {
     super.dispose();
   }
 
-   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
+  bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
     if (OneContext().hasDialogVisible) {
-      OneContext().popDialog();      
+      OneContext().popDialog();
       return true;
     }
     return false;

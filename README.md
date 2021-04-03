@@ -18,8 +18,6 @@
   
 > BuildContext always is needed (in some cases we need to choose carefully the specific one to make things work as expected), but, to global things, like dialogs, it can be reached by OneContext package. 🎯
 
-### 🥳  Migrate to null-safety.
-
 ## 🎮  Let's start 
 
 #### There are 2 ways to get OneContext singleton instance, OneContext() or OnceContext.intance. e.g.
@@ -370,6 +368,6 @@ return MaterialApp(
 
 #### If you have any question about the project:
 
-Email-me: fastencoding@gmail.com
+Email-me: code@emanuelbraz.dev
 
 Connect with me at [LinkedIn](https://www.linkedin.com/in/emanuel-braz/).

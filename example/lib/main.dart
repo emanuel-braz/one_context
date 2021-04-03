@@ -187,11 +187,11 @@ class _MyHomePageState extends State<MyHomePage>
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-          onWillPop: () async => false,
-          child: Scaffold(
+      onWillPop: () async => false,
+      child: Scaffold(
         appBar: AppBar(
-          title:
-              Text(widget.title + ' - ' + debugShowCheckedModeBanner.toString()),
+          title: Text(
+              widget.title + ' - ' + debugShowCheckedModeBanner.toString()),
           actions: <Widget>[
             Switch(
                 activeColor: Colors.blue,
@@ -213,7 +213,7 @@ class _MyHomePageState extends State<MyHomePage>
                 ElevatedButton(
                   child: Text(' Hard Reload'),
                   onPressed: () {
-                    OneNotification.hardReloadRoot(context);                    
+                    OneNotification.hardReloadRoot(context);
                   },
                 ),
                 ElevatedButton(
@@ -342,25 +342,26 @@ class _MyHomePageState extends State<MyHomePage>
                   onPressed: () async {
                     showTipsOnScreen(
                         'OneContext().showModalBottomSheet<String>()');
-                    var result = await OneContext().showModalBottomSheet<String>(
-                        builder: (context) => Container(
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  ListTile(
-                                      leading: Icon(Icons.music_note),
-                                      title: Text('Music'),
-                                      onTap: () =>
-                                          OneContext().popDialog('Music')),
-                                  ListTile(
-                                      leading: Icon(Icons.videocam),
-                                      title: Text('Video'),
-                                      onTap: () =>
-                                          OneContext().popDialog('Video')),
-                                  SizedBox(height: 45)
-                                ],
-                              ),
-                            ));
+                    var result =
+                        await OneContext().showModalBottomSheet<String>(
+                            builder: (context) => Container(
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      ListTile(
+                                          leading: Icon(Icons.music_note),
+                                          title: Text('Music'),
+                                          onTap: () =>
+                                              OneContext().popDialog('Music')),
+                                      ListTile(
+                                          leading: Icon(Icons.videocam),
+                                          title: Text('Video'),
+                                          onTap: () =>
+                                              OneContext().popDialog('Video')),
+                                      SizedBox(height: 45)
+                                    ],
+                                  ),
+                                ));
                     print(result);
                   },
                 ),
@@ -509,7 +510,8 @@ class _MyHomePageState extends State<MyHomePage>
                             (MediaQuery.of(context).size.height - 50).toInt())
                         .toDouble();
                     double getX() => Random()
-                        .nextInt((MediaQuery.of(context).size.width - 50).toInt())
+                        .nextInt(
+                            (MediaQuery.of(context).size.width - 50).toInt())
                         .toDouble();
                     randomOffset.putIfAbsent(
                         overId, () => Offset(getX(), getY()));
@@ -524,7 +526,8 @@ class _MyHomePageState extends State<MyHomePage>
                             (Set<MaterialState> states) {
                               if (states.contains(MaterialState.pressed))
                                 return Colors.green;
-                              return Colors.blue; // Use the component's default.
+                              return Colors
+                                  .blue; // Use the component's default.
                             },
                           ),
                         ),

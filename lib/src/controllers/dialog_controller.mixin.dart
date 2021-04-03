@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 typedef Widget DialogBuilder(BuildContext context);
 mixin DialogController {
-
   /// Return dialog utility class `DialogController`
   DialogController get dialog => this;
 
@@ -20,16 +19,17 @@ mixin DialogController {
   }
 
   void removeDialogVisible({Widget? widget}) {
-    if (widget != null){
+    if (widget != null) {
       _dialogs.value.remove(widget);
-    } else _dialogs.value.removeLast();
+    } else
+      _dialogs.value.removeLast();
   }
 
   /// ## Please, do not use this method!
   /// It's is a provisional implementation and there is no annotation for that
   /// in Dart 2, so I used the `@deprecated` instead, in order to keep the compatibility
   @deprecated
-  void resetDialogRegisters() {    
+  void resetDialogRegisters() {
     _dialogs.value.clear();
   }
 
@@ -66,7 +66,7 @@ mixin DialogController {
 
     Widget dialog = builder(context!);
     if (barrierDismissible == true) addDialogVisible(dialog);
-    
+
     return _showDialog!<T>(
       builder: (_) => dialog,
       barrierDismissible: barrierDismissible,
@@ -133,14 +133,15 @@ mixin DialogController {
     if (isDismissible == true) addDialogVisible(dialog);
 
     return _showModalBottomSheet!<T>(
-        builder: builder,
-        backgroundColor: backgroundColor,
-        clipBehavior: clipBehavior,
-        elevation: elevation,
-        isDismissible: isDismissible,
-        isScrollControlled: isScrollControlled,
-        shape: shape,
-        useRootNavigator: useRootNavigator).whenComplete(() {
+            builder: builder,
+            backgroundColor: backgroundColor,
+            clipBehavior: clipBehavior,
+            elevation: elevation,
+            isDismissible: isDismissible,
+            isScrollControlled: isScrollControlled,
+            shape: shape,
+            useRootNavigator: useRootNavigator)
+        .whenComplete(() {
       if (isDismissible == true) removeDialogVisible(widget: dialog);
     });
   }
