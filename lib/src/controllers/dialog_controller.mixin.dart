@@ -25,7 +25,7 @@ mixin DialogController {
       _dialogs.value.removeLast();
   }
 
-  void popAllDialogs(){
+  void popAllDialogs() {
     _dialogs.value.forEach((element) {
       OneContext().popDialog();
     });
