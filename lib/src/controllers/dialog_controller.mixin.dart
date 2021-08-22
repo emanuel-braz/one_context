@@ -79,35 +79,23 @@ mixin DialogController {
     });
   }
 
-  /// ## To be removed
-  /// Dismiss a [SnackBar] at the bottom of the scaffold.
-  /// Use `hideCurrentSnackBar` instead.
-  @deprecated
-  void dismissSnackBar(
-      {SnackBarClosedReason reason = SnackBarClosedReason.hide}) async {
-    if (!(await _contextLoaded())) return;
-    Scaffold.of(context!).hideCurrentSnackBar(reason: reason);
-  }
-
   /// Removes the current [SnackBar] by running its normal exit animation.
   ///
   /// The closed completer is called after the animation is complete.
-  @deprecated
   void hideCurrentSnackBar(
       {SnackBarClosedReason reason = SnackBarClosedReason.hide}) async {
     if (!(await _contextLoaded())) return;
-    Scaffold.of(context!).hideCurrentSnackBar(reason: reason);
+    ScaffoldMessenger.of(context!).hideCurrentSnackBar(reason: reason);
   }
 
   /// Removes the current [SnackBar] (if any) immediately.
   ///
   /// The removed snack bar does not run its normal exit animation. If there are
   /// any queued snack bars, they begin their entrance animation immediately.
-  @deprecated
   void removeCurrentSnackBar(
       {SnackBarClosedReason reason = SnackBarClosedReason.hide}) async {
     if (!(await _contextLoaded())) return;
-    Scaffold.of(context!).removeCurrentSnackBar(reason: reason);
+    ScaffoldMessenger.of(context!).removeCurrentSnackBar(reason: reason);
   }
 
   /// Shows a [SnackBar] at the bottom of the scaffold.

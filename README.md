@@ -365,9 +365,3 @@ return MaterialApp(
 ## 👨‍💻👨‍💻  Contributing
 
 #### Contributions of any kind are welcome! I'll be glad to analyse and accept them! 👾
-
-#### If you have any question about the project:
-
-Email-me: code@emanuelbraz.dev
-
-Connect with me at [LinkedIn](https://www.linkedin.com/in/emanuel-braz/).
