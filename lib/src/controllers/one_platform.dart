@@ -6,7 +6,7 @@ import 'package:one_context/src/components/one_basic_widget.dart';
 typedef Widget OnePlatformBuilder();
 
 class OnePlatform {
-  static Widget _app;
+  static Widget? _app;
   static set app(OnePlatformBuilder builder) => reboot(builder: builder);
 
   /// Warning: Use it carefully!!
@@ -35,12 +35,12 @@ class OnePlatform {
   /// ```
   /// OnePlatform.reboot(MyApp2()); // Reboot a new entire App
   /// ```
-  static void reboot({OnePlatformBuilder builder, VoidCallback setUp}) {
+  static void reboot({OnePlatformBuilder? builder, VoidCallback? setUp}) {
     setUp?.call();
     // ignore: unused_local_variable
-    Widget oldWidget = _app;
+    Widget? oldWidget = _app;
     Future.delayed(Duration.zero, () {
-      Widget newWidget = builder?.call();
+      Widget? newWidget = builder?.call();
       runApp(_app = newWidget ??
           OneBasicWidget(
             key: UniqueKey(),

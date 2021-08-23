@@ -28,7 +28,7 @@ class OneThemeController {
 
   static const String _themeModeKey = 'themeModeKey';
   OneThemeController get oneTheme => this;
-  BuildContext get context => OneContext().context;
+  BuildContext? get context => OneContext().context;
 
   static ThemeMode _defaultMode = ThemeMode.light;
 
@@ -38,42 +38,39 @@ class OneThemeController {
     return ThemeMode.light;
   }
 
-  static ThemeData _themeData;
-  ThemeData get themeData => _themeData;
+  static ThemeData? _themeData;
+  ThemeData? get themeData => _themeData;
   static ThemeData initThemeData(ThemeData themeData) {
-    if (themeData == null) throw FlutterError('themeData is required!');
     return _themeData ??= themeData;
   }
 
-  void changeThemeData(ThemeData themeData, {BuildContext buildContext}) {
+  void changeThemeData(ThemeData themeData, {BuildContext? buildContext}) {
     _themeData = themeData;
     OneContext().oneNotifier.notify(buildContext ?? OneContext().context,
         NotificationPayload(data: OneThemeChangerEvent()));
   }
 
   /// Dark Theme
-  static ThemeData _darkThemeData;
-  ThemeData get darkThemeData => _darkThemeData;
+  static ThemeData? _darkThemeData;
+  ThemeData? get darkThemeData => _darkThemeData;
   static ThemeData initDarkThemeData(ThemeData themeData) {
-    if (themeData == null) throw FlutterError('themeData is required!');
     return _darkThemeData ??= themeData;
   }
 
-  void changeDarkThemeData(ThemeData themeData, {BuildContext buildContext}) {
+  void changeDarkThemeData(ThemeData themeData, {BuildContext? buildContext}) {
     _darkThemeData = themeData;
     OneContext().oneNotifier.notify<OneThemeChangerEvent>(
         buildContext ?? OneContext().context,
         NotificationPayload(data: OneThemeChangerEvent()));
   }
 
-  static ThemeMode _themeMode;
+  static ThemeMode? _themeMode;
   ThemeMode get themeMode => _themeMode ?? _defaultMode;
   static Future<ThemeMode> getCurrentyMode() => _themeMode != null
       ? Future.value(_themeMode)
       : Future.value(_defaultMode);
 
   static ThemeMode initThemeMode(ThemeMode themeMode) {
-    if (themeMode == null) throw FlutterError('ThemeMode is required!');
     return _themeMode ??= _defaultMode;
   }
 
@@ -96,7 +93,7 @@ class OneThemeController {
   }
 
   void changeMode(ThemeMode themeMode,
-      {bool save = true, BuildContext buildContext}) {
+      {bool save = true, BuildContext? buildContext}) {
     _themeMode = themeMode;
     OneContext().oneNotifier.notify(buildContext ?? OneContext().context,
         NotificationPayload(data: OneThemeChangerEvent()));

@@ -1,3 +1,13 @@
+## [1.1.1] - August 22, 2021
+* Fix snackbar deprecated methods
+* Break changes dismissSnackBar is no longer available
+
+## [1.1.0] - April 3, 2021 ( Flutter 2.0.2 )
+* Close Dialog and ModalBottomSheets on back button tap (android)
+
+## [1.0.0] - Mar 16, 2021 ( Flutter 2.0.2 • Null safety)
+* Migrate to null-safety.
+
 ## [0.5.0] - Dec 22, 2020 ( Flutter 1.22.5 • channel stable )
 * Fix Scaffold logic
 * Breaking changes on OneContext().showSnackBar (now it returns a `Future`)
