@@ -60,7 +60,7 @@ class _OneContextWidgetState extends State<OneContextWidget> {
 
   ScaffoldFeatureController<SnackBar, SnackBarClosedReason> _showSnackBar(
           SnackBar Function(BuildContext?) builder) =>
-      Scaffold.of(OneContext().context!)
+      ScaffoldMessenger.of(OneContext().context!)
           .showSnackBar(builder(OneContext().context));
 
   Future<T?> _showModalBottomSheet<T>(
