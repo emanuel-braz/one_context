@@ -1,6 +1,6 @@
 name: one_context
 description: OneContext provides a simple way to deal with Dialogs, Overlays, Navigations, Theme* and MediaQuery* with no need of BuildContext.
-version: 1.1.1
+version: 2.0.0
 homepage: https://github.com/emanuel-braz/one_context.git
 
 environment:
