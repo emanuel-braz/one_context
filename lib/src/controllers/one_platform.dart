@@ -1,6 +1,4 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:one_context/src/components/one_basic_widget.dart';
 
 typedef Widget OnePlatformBuilder();

@@ -1,3 +1,6 @@
+## [2.0.0] - May 23, 2022
+* Update flutter version 3.0.0
+
 ## [1.1.1] - August 22, 2021
 * Fix snackbar deprecated methods
 * Break changes dismissSnackBar is no longer available
