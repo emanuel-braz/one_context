@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:one_context/src/components/one_context_widget.dart';
 import 'package:one_context/src/controllers/dialog_controller.mixin.dart';
 import 'package:one_context/src/controllers/navigator_controller.mixin.dart';

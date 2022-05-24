@@ -1,7 +1,5 @@
 import 'dart:math';
-import 'package:flutter/services.dart';
 import 'package:one_context/one_context.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 bool debugShowCheckedModeBanner = false;
@@ -82,7 +80,8 @@ class MyApp extends StatelessWidget {
                         return SecondPage();
                       },
                     );
-                  }
+                  } else
+                    return null;
                 },
               );
             });
@@ -588,7 +587,7 @@ class _MyHomePageState extends State<MyHomePage>
                     ThemeData theme = OneContext().theme;
                     String info = 'platform: ${theme.platform}\n'
                         'primaryColor: ${theme.primaryColor}\n'
-                        'accentColor: ${theme.accentColor}\n'
+                        'accentColor: ${theme.colorScheme.secondary}\n'
                         'title.color: ${theme.textTheme.headline6?.color}';
                     print(info);
                     showTipsOnScreen(info, size: 200, seconds: 5);

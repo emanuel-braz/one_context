@@ -1,7 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:one_context/one_context.dart';
-import 'package:one_context/src/components/one_notifier.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class OneThemeChangerEvent {}
