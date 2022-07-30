@@ -1,10 +1,10 @@
+import 'package:flutter/material.dart';
 import 'package:one_context/src/components/one_context_widget.dart';
 import 'package:one_context/src/controllers/dialog_controller.mixin.dart';
 import 'package:one_context/src/controllers/navigator_controller.mixin.dart';
 import 'package:one_context/src/controllers/one_notification_controller.dart';
-import 'package:one_context/src/controllers/overlay_controller.mixin.dart';
-import 'package:flutter/material.dart';
 import 'package:one_context/src/controllers/one_theme_controller.dart';
+import 'package:one_context/src/controllers/overlay_controller.mixin.dart';
 
 class OneContext with NavigatorController, OverlayController, DialogController {
   static BuildContext? _context;
@@ -58,30 +58,47 @@ class OneContext with NavigatorController, OverlayController, DialogController {
 
   /// Register all necessary callbacks from main widget, automatically
   void registerDialogCallback({
-    Future<T?> Function<T>(
-            {bool? barrierDismissible,
-            required Widget Function(BuildContext) builder,
-            bool useRootNavigator})?
+    Future<T?> Function<T>({
+      required Widget Function(BuildContext) builder,
+      bool? barrierDismissible,
+      bool useRootNavigator,
+      Color? barrierColor,
+      String? barrierLabel,
+      bool useSafeArea,
+      RouteSettings? routeSettings,
+      Offset? anchorPoint,
+    })?
         showDialog,
-    Future<T?> Function<T>(
-            {required Widget Function(BuildContext) builder,
-            Color? backgroundColor,
-            double? elevation,
-            ShapeBorder? shape,
-            Clip? clipBehavior,
-            bool? isScrollControlled,
-            bool? useRootNavigator,
-            bool? isDismissible})?
+    Future<T?> Function<T>({
+      required Widget Function(BuildContext) builder,
+      Color? backgroundColor,
+      double? elevation,
+      ShapeBorder? shape,
+      Clip? clipBehavior,
+      bool? isScrollControlled,
+      bool? useRootNavigator,
+      bool? isDismissible,
+      BoxConstraints? constraints,
+      Color? barrierColor,
+      bool? enableDrag,
+      RouteSettings? routeSettings,
+      AnimationController? transitionAnimationController,
+      Offset? anchorPoint,
+    })?
         showModalBottomSheet,
     ScaffoldFeatureController<SnackBar, SnackBarClosedReason> Function(
             SnackBar Function(BuildContext?) builder)?
         showSnackBar,
-    PersistentBottomSheetController<T> Function<T>(
-            {Widget Function(BuildContext)? builder,
-            Color? backgroundColor,
-            double? elevation,
-            ShapeBorder? shape,
-            Clip? clipBehavior})?
+    PersistentBottomSheetController<T> Function<T>({
+      Widget Function(BuildContext)? builder,
+      Color? backgroundColor,
+      double? elevation,
+      ShapeBorder? shape,
+      Clip? clipBehavior,
+      BoxConstraints? constraints,
+      bool? enableDrag,
+      AnimationController? transitionAnimationController,
+    })?
         showBottomSheet,
   }) {
     registerCallback(

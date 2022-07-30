@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
-import 'package:one_context/src/controllers/one_context.dart';
 import 'package:flutter/material.dart';
+import 'package:one_context/src/controllers/one_context.dart';
 
 typedef Widget DialogBuilder(BuildContext context);
 mixin DialogController {
@@ -36,35 +36,61 @@ mixin DialogController {
     _dialogs.value.clear();
   }
 
-  Future<T?> Function<T>(
-      {bool? barrierDismissible,
-      required Widget Function(BuildContext) builder,
-      bool useRootNavigator})? _showDialog;
-  Future<T?> Function<T>(
-      {required Widget Function(BuildContext) builder,
-      Color? backgroundColor,
-      double? elevation,
-      ShapeBorder? shape,
-      Clip? clipBehavior,
-      bool isScrollControlled,
-      bool useRootNavigator,
-      bool isDismissible})? _showModalBottomSheet;
+  Future<T?> Function<T>({
+    required Widget Function(BuildContext) builder,
+    bool? barrierDismissible,
+    bool useRootNavigator,
+    Color? barrierColor,
+    String? barrierLabel,
+    bool useSafeArea,
+    RouteSettings? routeSettings,
+    Offset? anchorPoint,
+  })? _showDialog;
+
+  Future<T?> Function<T>({
+    required Widget Function(BuildContext) builder,
+    Color? backgroundColor,
+    double? elevation,
+    ShapeBorder? shape,
+    Clip? clipBehavior,
+    bool isScrollControlled,
+    bool useRootNavigator,
+    bool isDismissible,
+    BoxConstraints? constraints,
+    Color? barrierColor,
+    bool? enableDrag,
+    RouteSettings? routeSettings,
+    AnimationController? transitionAnimationController,
+    Offset? anchorPoint,
+  })? _showModalBottomSheet;
+
   ScaffoldFeatureController<SnackBar, SnackBarClosedReason> Function(
       SnackBar Function(BuildContext?) builder)? _showSnackBar;
-  PersistentBottomSheetController<T> Function<T>(
-      {Widget Function(BuildContext) builder,
-      Color? backgroundColor,
-      double? elevation,
-      ShapeBorder? shape,
-      Clip? clipBehavior})? _showBottomSheet;
+
+  PersistentBottomSheetController<T> Function<T>({
+    Widget Function(BuildContext) builder,
+    Color? backgroundColor,
+    double? elevation,
+    ShapeBorder? shape,
+    Clip? clipBehavior,
+    BoxConstraints? constraints,
+    bool? enableDrag,
+    AnimationController? transitionAnimationController,
+  })? _showBottomSheet;
 
   /// Displays a Material dialog above the current contents of the app, with
   /// Material entrance and exit animations, modal barrier color, and modal
   /// barrier behavior (dialog is dismissible with a tap on the barrier).
-  Future<T?> showDialog<T>(
-      {required Widget Function(BuildContext) builder,
-      bool barrierDismissible = true,
-      bool useRootNavigator = true}) async {
+  Future<T?> showDialog<T>({
+    required Widget Function(BuildContext) builder,
+    bool useRootNavigator = true,
+    String? barrierLabel,
+    RouteSettings? routeSettings,
+    Offset? anchorPoint,
+    bool barrierDismissible = true,
+    Color? barrierColor = Colors.black54,
+    bool useSafeArea = true,
+  }) async {
     if (!(await _contextLoaded())) return null;
 
     Widget dialog = builder(context!);
@@ -74,6 +100,11 @@ mixin DialogController {
       builder: (_) => dialog,
       barrierDismissible: barrierDismissible,
       useRootNavigator: useRootNavigator,
+      barrierColor: barrierColor,
+      barrierLabel: barrierLabel,
+      useSafeArea: useSafeArea,
+      routeSettings: routeSettings,
+      anchorPoint: anchorPoint,
     ).whenComplete(() {
       if (barrierDismissible == true) removeDialogVisible(widget: dialog);
     });
@@ -109,30 +140,43 @@ mixin DialogController {
   ///
   /// A modal bottom sheet is an alternative to a menu or a dialog and prevents
   /// the user from interacting with the rest of the app.
-  Future<T?> showModalBottomSheet<T>(
-      {required Widget Function(BuildContext) builder,
-      Color? backgroundColor,
-      double? elevation,
-      ShapeBorder? shape,
-      Clip? clipBehavior,
-      bool isScrollControlled = false,
-      bool useRootNavigator = false,
-      bool isDismissible = true}) async {
+  Future<T?> showModalBottomSheet<T>({
+    required Widget Function(BuildContext) builder,
+    Color? backgroundColor,
+    double? elevation,
+    ShapeBorder? shape,
+    Clip? clipBehavior,
+    bool isScrollControlled = false,
+    bool useRootNavigator = false,
+    bool isDismissible = true,
+    BoxConstraints? constraints,
+    Color? barrierColor,
+    bool? enableDrag,
+    RouteSettings? routeSettings,
+    AnimationController? transitionAnimationController,
+    Offset? anchorPoint,
+  }) async {
     if (!(await _contextLoaded())) return null;
 
     Widget dialog = builder(context!);
     if (isDismissible == true) addDialogVisible(dialog);
 
     return _showModalBottomSheet!<T>(
-            builder: builder,
-            backgroundColor: backgroundColor,
-            clipBehavior: clipBehavior,
-            elevation: elevation,
-            isDismissible: isDismissible,
-            isScrollControlled: isScrollControlled,
-            shape: shape,
-            useRootNavigator: useRootNavigator)
-        .whenComplete(() {
+      builder: builder,
+      backgroundColor: backgroundColor,
+      clipBehavior: clipBehavior,
+      elevation: elevation,
+      isDismissible: isDismissible,
+      isScrollControlled: isScrollControlled,
+      shape: shape,
+      useRootNavigator: useRootNavigator,
+      constraints: constraints,
+      barrierColor: barrierColor,
+      enableDrag: enableDrag,
+      routeSettings: routeSettings,
+      transitionAnimationController: transitionAnimationController,
+      anchorPoint: anchorPoint,
+    ).whenComplete(() {
       if (isDismissible == true) removeDialogVisible(widget: dialog);
     });
   }
@@ -142,47 +186,72 @@ mixin DialogController {
   ///
   /// Returns a controller that can be used to close and otherwise manipulate the
   /// bottom sheet.
-  Future<PersistentBottomSheetController<T>?> showBottomSheet<T>(
-      {required Widget Function(BuildContext) builder,
-      Color? backgroundColor,
-      double? elevation,
-      ShapeBorder? shape,
-      Clip? clipBehavior}) async {
+  Future<PersistentBottomSheetController<T>?> showBottomSheet<T>({
+    required Widget Function(BuildContext) builder,
+    Color? backgroundColor,
+    double? elevation,
+    ShapeBorder? shape,
+    Clip? clipBehavior,
+    BoxConstraints? constraints,
+    bool? enableDrag,
+    AnimationController? transitionAnimationController,
+  }) async {
     if (!(await _contextLoaded())) return null;
     return _showBottomSheet!<T>(
-        builder: builder,
-        backgroundColor: backgroundColor,
-        elevation: elevation,
-        shape: shape,
-        clipBehavior: clipBehavior);
+      builder: builder,
+      backgroundColor: backgroundColor,
+      elevation: elevation,
+      shape: shape,
+      clipBehavior: clipBehavior,
+      constraints: constraints,
+      enableDrag: enableDrag,
+      transitionAnimationController: transitionAnimationController,
+    );
   }
 
   /// Register callbacks
   void registerCallback(
-      {Future<T?> Function<T>(
-              {bool? barrierDismissible,
-              required Widget Function(BuildContext) builder,
-              bool useRootNavigator})?
+      {Future<T?> Function<T>({
+        required Widget Function(BuildContext) builder,
+        bool? barrierDismissible,
+        bool useRootNavigator,
+        Color? barrierColor,
+        String? barrierLabel,
+        bool useSafeArea,
+        RouteSettings? routeSettings,
+        Offset? anchorPoint,
+      })?
           showDialog,
-      Future<T?> Function<T>(
-              {required Widget Function(BuildContext) builder,
-              Color? backgroundColor,
-              double? elevation,
-              ShapeBorder? shape,
-              Clip? clipBehavior,
-              bool? isScrollControlled,
-              bool? useRootNavigator,
-              bool? isDismissible})?
+      Future<T?> Function<T>({
+        required Widget Function(BuildContext) builder,
+        Color? backgroundColor,
+        double? elevation,
+        ShapeBorder? shape,
+        Clip? clipBehavior,
+        bool? isScrollControlled,
+        bool? useRootNavigator,
+        bool? isDismissible,
+        BoxConstraints? constraints,
+        Color? barrierColor,
+        bool? enableDrag,
+        RouteSettings? routeSettings,
+        AnimationController? transitionAnimationController,
+        Offset? anchorPoint,
+      })?
           showModalBottomSheet,
       ScaffoldFeatureController<SnackBar, SnackBarClosedReason> Function(
               SnackBar Function(BuildContext?) builder)?
           showSnackBar,
-      PersistentBottomSheetController<T> Function<T>(
-              {Widget Function(BuildContext)? builder,
-              Color? backgroundColor,
-              double? elevation,
-              ShapeBorder? shape,
-              Clip? clipBehavior})?
+      PersistentBottomSheetController<T> Function<T>({
+        Widget Function(BuildContext)? builder,
+        Color? backgroundColor,
+        double? elevation,
+        ShapeBorder? shape,
+        Clip? clipBehavior,
+        BoxConstraints? constraints,
+        bool? enableDrag,
+        AnimationController? transitionAnimationController,
+      })?
           showBottomSheet}) {
     _showDialog = showDialog;
     _showSnackBar = showSnackBar;
