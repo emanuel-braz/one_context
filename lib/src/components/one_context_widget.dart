@@ -47,15 +47,26 @@ class _OneContextWidgetState extends State<OneContextWidget> {
     );
   }
 
-  Future<T?> _showDialog<T>(
-          {bool? barrierDismissible = true,
-          required Widget Function(BuildContext) builder,
-          bool useRootNavigator = true}) =>
+  Future<T?> _showDialog<T>({
+    required Widget Function(BuildContext) builder,
+    bool? barrierDismissible = true,
+    bool useRootNavigator = true,
+    Color? barrierColor = Colors.black54,
+    String? barrierLabel,
+    bool useSafeArea = true,
+    RouteSettings? routeSettings,
+    Offset? anchorPoint,
+  }) =>
       showDialog<T?>(
         context: context,
         builder: (context) => builder(context),
         barrierDismissible: barrierDismissible!,
         useRootNavigator: useRootNavigator,
+        barrierColor: barrierColor,
+        barrierLabel: barrierLabel,
+        useSafeArea: useSafeArea,
+        routeSettings: routeSettings,
+        anchorPoint: anchorPoint,
       );
 
   ScaffoldFeatureController<SnackBar, SnackBarClosedReason> _showSnackBar(
@@ -63,15 +74,22 @@ class _OneContextWidgetState extends State<OneContextWidget> {
       ScaffoldMessenger.of(OneContext().context!)
           .showSnackBar(builder(OneContext().context));
 
-  Future<T?> _showModalBottomSheet<T>(
-      {required Widget Function(BuildContext) builder,
-      Color? backgroundColor,
-      double? elevation,
-      ShapeBorder? shape,
-      Clip? clipBehavior,
-      bool? isScrollControlled = false,
-      bool? useRootNavigator = false,
-      bool? isDismissible = true}) {
+  Future<T?> _showModalBottomSheet<T>({
+    required Widget Function(BuildContext) builder,
+    Color? backgroundColor,
+    double? elevation,
+    ShapeBorder? shape,
+    Clip? clipBehavior,
+    bool? isScrollControlled = false,
+    bool? useRootNavigator = false,
+    bool? isDismissible = true,
+    BoxConstraints? constraints,
+    Color? barrierColor,
+    bool? enableDrag,
+    RouteSettings? routeSettings,
+    AnimationController? transitionAnimationController,
+    Offset? anchorPoint,
+  }) {
     return showModalBottomSheet<T>(
       context: context,
       builder: builder,
@@ -82,21 +100,35 @@ class _OneContextWidgetState extends State<OneContextWidget> {
       isScrollControlled: isScrollControlled!,
       shape: shape,
       useRootNavigator: useRootNavigator!,
+      constraints: constraints,
+      barrierColor: barrierColor,
+      enableDrag: enableDrag ?? true,
+      routeSettings: routeSettings,
+      transitionAnimationController: transitionAnimationController,
+      anchorPoint: anchorPoint,
     );
   }
 
-  PersistentBottomSheetController<T> _showBottomSheet<T>(
-      {Widget Function(BuildContext)? builder,
-      Color? backgroundColor,
-      double? elevation,
-      ShapeBorder? shape,
-      Clip? clipBehavior}) {
+  PersistentBottomSheetController<T> _showBottomSheet<T>({
+    Widget Function(BuildContext)? builder,
+    Color? backgroundColor,
+    double? elevation,
+    ShapeBorder? shape,
+    Clip? clipBehavior,
+    BoxConstraints? constraints,
+    bool? enableDrag,
+    AnimationController? transitionAnimationController,
+  }) {
     return showBottomSheet<T>(
-        context: OneContext().context!,
-        builder: builder!,
-        backgroundColor: backgroundColor,
-        elevation: elevation,
-        shape: shape,
-        clipBehavior: clipBehavior);
+      context: OneContext().context!,
+      builder: builder!,
+      backgroundColor: backgroundColor,
+      elevation: elevation,
+      shape: shape,
+      clipBehavior: clipBehavior,
+      constraints: constraints,
+      enableDrag: enableDrag ?? true,
+      transitionAnimationController: transitionAnimationController,
+    );
   }
 }

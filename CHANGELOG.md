@@ -1,3 +1,6 @@
+## [2.1.0] - Jul 30, 2022
+* Update dialogs parameters
+
 ## [2.0.0] - May 23, 2022
 * Update flutter version 3.0.0
 

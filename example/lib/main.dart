@@ -1,6 +1,7 @@
 import 'dart:math';
-import 'package:one_context/one_context.dart';
+
 import 'package:flutter/material.dart';
+import 'package:one_context/one_context.dart';
 
 bool debugShowCheckedModeBanner = false;
 const localeEnglish = [Locale('en', '')];
@@ -303,6 +304,7 @@ class _MyHomePageState extends State<MyHomePage>
                     showTipsOnScreen('OneContext().showDialog<String>()');
 
                     var result = await OneContext().showDialog<String>(
+                        barrierColor: Colors.purple.withOpacity(0.5),
                         builder: (context) => AlertDialog(
                               title: new Text("The Title"),
                               content: new Text("The Body"),
@@ -343,6 +345,7 @@ class _MyHomePageState extends State<MyHomePage>
                         'OneContext().showModalBottomSheet<String>()');
                     var result =
                         await OneContext().showModalBottomSheet<String>(
+                            barrierColor: Colors.amber.withOpacity(0.5),
                             builder: (context) => Container(
                                   child: Column(
                                     mainAxisSize: MainAxisSize.min,
@@ -369,6 +372,7 @@ class _MyHomePageState extends State<MyHomePage>
                   onPressed: () {
                     showTipsOnScreen('OneContext().showBottomSheet()');
                     OneContext().showBottomSheet(
+                      constraints: BoxConstraints(maxHeight: 100),
                       builder: (context) => Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(10)),
