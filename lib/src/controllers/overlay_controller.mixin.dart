@@ -112,13 +112,17 @@ mixin OverlayController {
   Future<OverlayEntry> showProgressIndicator(
       {Widget Function(BuildContext? context)? builder,
       Color? backgroundColor,
-      Color? circularProgressIndicatorColor}) {
+      Color? circularProgressIndicatorColor,
+      bool allowDismiss = false}) {
     return showOverlay(
         builder: (_) => Stack(
               children: <Widget>[
                 ModalBarrier(
-                  dismissible: false,
+                  dismissible: allowDismiss,
                   color: backgroundColor ?? Colors.black45,
+                  onDismiss: () {
+                    if (allowDismiss) hideOverlay();
+                  },
                 ),
                 builder != null
                     ? builder(context)
