@@ -1,5 +1,5 @@
-import 'package:one_context/src/controllers/one_context.dart';
 import 'package:flutter/material.dart';
+import 'package:one_context/src/controllers/one_context.dart';
 
 // to do...
 // enum OverlayTransition {fade, slideUp, slideDown, slideRight, slideLeft}
@@ -18,7 +18,7 @@ mixin OverlayController {
       {Widget Function(BuildContext context)? builder}) async {
     hideOverlay();
     await Future.delayed(Duration.zero, () {});
-    OverlayState overlayState = Overlay.of(OneContext().context!)!;
+    OverlayState overlayState = Overlay.of(OneContext().context!);
     _overlayEntry = OverlayEntry(builder: builder!);
     overlayState.insert(_overlayEntry!);
     return _overlayEntry!;
@@ -40,7 +40,7 @@ mixin OverlayController {
       OverlayEntry? below,
       OverlayEntry? above}) async {
     await Future.delayed(Duration.zero, () {});
-    OverlayState overlayState = Overlay.of(OneContext().context!)!;
+    OverlayState overlayState = Overlay.of(OneContext().context!);
     OverlayEntry overlayEntry = OverlayEntry(builder: builder);
     overlayState.insert(overlayEntry, above: above, below: below);
     _overlays.putIfAbsent(overlayId, () => overlayEntry);
@@ -91,7 +91,7 @@ mixin OverlayController {
   /// It is an error to specify both `above` and `below`.
   void rearrange(Iterable<OverlayEntry> newEntries,
       {OverlayEntry? below, OverlayEntry? above}) {
-    OverlayState overlayState = Overlay.of(OneContext().context!)!;
+    OverlayState overlayState = Overlay.of(OneContext().context!);
     overlayState.rearrange(newEntries, below: below, above: above);
   }
 
@@ -102,7 +102,7 @@ mixin OverlayController {
   /// asserts. To avoid people depending on it, this function is implemented
   /// only in debug mode, and always returns false in release mode.
   bool debugIsVisible(OverlayEntry entry) {
-    OverlayState overlayState = Overlay.of(OneContext().context!)!;
+    OverlayState overlayState = Overlay.of(OneContext().context!);
     return overlayState.debugIsVisible(entry);
   }
 

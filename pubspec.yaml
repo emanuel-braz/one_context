@@ -5,16 +5,17 @@ homepage: https://github.com/emanuel-braz/one_context
 repository: https://github.com/emanuel-braz/one_context.git
 
 environment:
-  sdk: '>=2.17.0 <3.0.0'
+  sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  shared_preferences: ^2.0.4
-  back_button_interceptor: ^6.0.0
+  shared_preferences: ^2.2.0
+  back_button_interceptor: ^6.0.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  pana: ^0.21.35
     
 flutter:

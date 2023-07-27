@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:one_context/src/components/one_context_widget.dart';
 import 'package:one_context/src/controllers/dialog_controller.mixin.dart';
 import 'package:one_context/src/controllers/navigator_controller.mixin.dart';
 import 'package:one_context/src/controllers/one_notification_controller.dart';
-import 'package:one_context/src/controllers/one_theme_controller.dart';
 import 'package:one_context/src/controllers/overlay_controller.mixin.dart';
+
+import '../../one_context.dart';
 
 class OneContext with NavigatorController, OverlayController, DialogController {
   static BuildContext? _context;
@@ -12,11 +12,13 @@ class OneContext with NavigatorController, OverlayController, DialogController {
   /// The almost top root context of the app,
   /// use it carefully or don't use it directly!
   BuildContext? get context {
+    _context = navigatorKey.currentContext;
     assert(_context != null, NO_CONTEXT_ERROR);
     return _context;
   }
 
-  static bool get hasContext => _context != null;
+  static bool get hasContext => OneContext().context != null;
+
   set context(BuildContext? newContext) => _context = newContext;
 
   /// If you need reactive changes, do not use OneContext().mediaQuery
@@ -55,58 +57,6 @@ class OneContext with NavigatorController, OverlayController, DialogController {
 
   static OneContext instance = OneContext._private();
   factory OneContext() => instance;
-
-  /// Register all necessary callbacks from main widget, automatically
-  void registerDialogCallback({
-    Future<T?> Function<T>({
-      required Widget Function(BuildContext) builder,
-      bool? barrierDismissible,
-      bool useRootNavigator,
-      Color? barrierColor,
-      String? barrierLabel,
-      bool useSafeArea,
-      RouteSettings? routeSettings,
-      Offset? anchorPoint,
-    })?
-        showDialog,
-    Future<T?> Function<T>({
-      required Widget Function(BuildContext) builder,
-      Color? backgroundColor,
-      double? elevation,
-      ShapeBorder? shape,
-      Clip? clipBehavior,
-      bool? isScrollControlled,
-      bool? useRootNavigator,
-      bool? isDismissible,
-      BoxConstraints? constraints,
-      Color? barrierColor,
-      bool? enableDrag,
-      RouteSettings? routeSettings,
-      AnimationController? transitionAnimationController,
-      Offset? anchorPoint,
-    })?
-        showModalBottomSheet,
-    ScaffoldFeatureController<SnackBar, SnackBarClosedReason> Function(
-            SnackBar Function(BuildContext?) builder)?
-        showSnackBar,
-    PersistentBottomSheetController<T> Function<T>({
-      Widget Function(BuildContext)? builder,
-      Color? backgroundColor,
-      double? elevation,
-      ShapeBorder? shape,
-      Clip? clipBehavior,
-      BoxConstraints? constraints,
-      bool? enableDrag,
-      AnimationController? transitionAnimationController,
-    })?
-        showBottomSheet,
-  }) {
-    registerCallback(
-        showDialog: showDialog,
-        showSnackBar: showSnackBar,
-        showModalBottomSheet: showModalBottomSheet,
-        showBottomSheet: showBottomSheet);
-  }
 
   /// Use [OneContext().builder] in MaterialApp builder,
   /// in order to show dialogs and overlays.
@@ -155,19 +105,22 @@ class ParentContextWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MediaQuery(
-      data: mediaQueryData ?? MediaQuery.of(context),
-      child: Navigator(
-        initialRoute: initialRoute,
-        onUnknownRoute: onUnknownRoute,
-        observers: observers,
-        onGenerateRoute: onGenerateRoute ??
-            (settings) => MaterialPageRoute(
-                builder: (context) => OneContextWidget(
-                      child: child,
-                    )),
-      ),
+    return OneContextWidget(
+      child: child,
     );
+    // return MediaQuery(
+    //   data: mediaQueryData ?? MediaQuery.of(context),
+    //   child: Navigator(
+    //     initialRoute: initialRoute,
+    //     onUnknownRoute: onUnknownRoute,
+    //     observers: observers,
+    //     onGenerateRoute: onGenerateRoute ??
+    //         (settings) => MaterialPageRoute(
+    //             builder: (context) => OneContextWidget(
+    //                   child: child,
+    //                 )),
+    //   ),
+    // );
   }
 }
 

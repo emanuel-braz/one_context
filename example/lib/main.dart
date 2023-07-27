@@ -6,18 +6,16 @@ import 'package:one_context/one_context.dart';
 bool debugShowCheckedModeBanner = false;
 const localeEnglish = [Locale('en', '')];
 
-void main() => OnePlatform.app = () => MyApp();
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  OnePlatform.app = () => MyApp();
+}
 
 class MyApp extends StatelessWidget {
   MyApp() {
     print('MyApp loaded!');
 
     debugShowCheckedModeBanner = true;
-
-    // Reseting light theme
-    if (OneContext.hasContext)
-      OneContext().oneTheme.changeThemeData(
-          ThemeData(primarySwatch: Colors.green, brightness: Brightness.light));
   }
 
   @override
@@ -47,27 +45,28 @@ class MyApp extends StatelessWidget {
             stopBubbling: true,
             builder: (context, data) {
               return MaterialApp(
-                navigatorObservers: [OneContext().heroController],
+                // TODO: check observers
+                // navigatorObservers: [OneContext().heroController],
                 debugShowCheckedModeBanner: debugShowCheckedModeBanner,
                 // Configure reactive theme mode and theme data (needs OneNotification above in the widget tree)
                 themeMode: OneThemeController.initThemeMode(ThemeMode.light),
                 theme: OneThemeController.initThemeData(ThemeData(
-                    primarySwatch: Colors.green,
-                    primaryColor: Colors.green,
-                    brightness: Brightness.light)),
+                  primarySwatch: Colors.green,
+                  primaryColor: Colors.green,
+                  brightness: Brightness.light,
+                  useMaterial3: true,
+                )),
                 darkTheme: OneThemeController.initDarkThemeData(ThemeData(
                     brightness: Brightness.dark, primaryColor: Colors.blue)),
 
+                // Configure Navigator key
+                navigatorKey: OneContext().navigatorKey,
+
                 // Configure [OneContext] to dialogs, overlays, snackbars, and ThemeMode
                 builder: OneContext().builder,
-                // builder: (context, widget) => OneContext().builder(context, widget, mediaQueryData: MediaQuery.of(context).copyWith(textScaleFactor: 1.0)),
-
-                // Set navigator key in order to navigate
-                navigatorKey: OneContext().key,
 
                 // [data] it comes through events
                 supportedLocales: dataLocale ?? [const Locale('en', '')],
-                // supportedLocales: dataLocale ?? [const Locale('en', '')],
 
                 title: 'OneContext Demo',
                 home: MyHomePage(
@@ -94,7 +93,7 @@ class MyApp extends StatelessWidget {
 class MyApp2 extends StatelessWidget {
   MyApp2() {
     print('MyApp2 loaded!');
-    OneContext().key = GlobalKey<NavigatorState>();
+    OneContext().navigatorKey = GlobalKey<NavigatorState>();
   }
 
   @override
@@ -105,7 +104,7 @@ class MyApp2 extends StatelessWidget {
         home: MyHomePage2(title: 'A NEW APPLICATION'),
         routes: {'/second': (context) => SecondPage()},
         builder: OneContext().builder,
-        navigatorKey: OneContext().key);
+        navigatorKey: OneContext().navigatorKey);
   }
 }
 
@@ -134,7 +133,7 @@ class _MyHomePage2State extends State<MyHomePage2> {
                 onPressed: () {
                   OnePlatform.reboot(
                     setUp: () {
-                      OneContext().key = GlobalKey<NavigatorState>();
+                      OneContext().navigatorKey = GlobalKey<NavigatorState>();
                     },
                     builder: () => MyApp(),
                   );
@@ -241,7 +240,8 @@ class _MyHomePageState extends State<MyHomePage>
                   onPressed: () {
                     OnePlatform.reboot(
                         setUp: () {
-                          OneContext().key = GlobalKey<NavigatorState>();
+                          OneContext().navigatorKey =
+                              GlobalKey<NavigatorState>();
                         },
                         builder: () => MyApp2());
                   },
@@ -290,7 +290,7 @@ class _MyHomePageState extends State<MyHomePage>
                                 textAlign: TextAlign.center,
                                 style: Theme.of(context!)
                                     .textTheme
-                                    .headline6
+                                    .headlineMedium
                                     ?.copyWith(color: Colors.white),
                               ),
                               action: SnackBarAction(
@@ -322,22 +322,6 @@ class _MyHomePageState extends State<MyHomePage>
                     print(result);
                   },
                 ),
-                // ElevatedButton(
-                //   child: Text('Show DatePicker'),
-                //   onPressed: () async {
-                //     showTipsOnScreen('OneContext().showDatePicker()');
-                //     DateTime selectedDate = DateTime.now();
-                //     OneContext()
-                //         .showDatePicker(
-                //             initialDate: selectedDate,
-                //             firstDate: DateTime(2015, 8),
-                //             lastDate: DateTime(2101))
-                //         .then((picked) => {
-                //               if (picked != null && picked != selectedDate)
-                //                 print(picked)
-                //             });
-                //   },
-                // ),
                 ElevatedButton(
                   child: Text('Show modalBottomSheet'),
                   onPressed: () async {
@@ -385,7 +369,9 @@ class _MyHomePageState extends State<MyHomePage>
                             icon: Icon(Icons.arrow_drop_down),
                             iconSize: 50,
                             color: Colors.white,
-                            onPressed: () => OneContext().popDialog()),
+                            onPressed: () {
+                              OneContext().popBottomSheet();
+                            }),
                       ),
                     );
                   },
@@ -592,7 +578,7 @@ class _MyHomePageState extends State<MyHomePage>
                     String info = 'platform: ${theme.platform}\n'
                         'primaryColor: ${theme.primaryColor}\n'
                         'accentColor: ${theme.colorScheme.secondary}\n'
-                        'title.color: ${theme.textTheme.headline6?.color}';
+                        'title.color: ${theme.textTheme.headlineMedium?.color}';
                     print(info);
                     showTipsOnScreen(info, size: 200, seconds: 5);
                   },
