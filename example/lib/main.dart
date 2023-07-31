@@ -284,20 +284,24 @@ class _MyHomePageState extends State<MyHomePage>
                     OneContext()
                         .hideCurrentSnackBar(); // Dismiss snackbar before show another ;)
                     OneContext().showSnackBar(
-                        builder: (context) => SnackBar(
-                              content: Text(
-                                'My awesome snackBar!',
-                                textAlign: TextAlign.center,
-                                style: Theme.of(context!)
-                                    .textTheme
-                                    .headlineMedium
-                                    ?.copyWith(color: Colors.white),
-                              ),
-                              action: SnackBarAction(
-                                  label: 'DISMISS', onPressed: () {}),
-                            ));
+                      builder: (context) => SnackBar(
+                        content: Text(
+                          'My awesome snackBar!',
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context!)
+                              .textTheme
+                              .headlineMedium
+                              ?.copyWith(color: Colors.white),
+                        ),
+                        action:
+                            SnackBarAction(label: 'DISMISS', onPressed: () {}),
+                      ),
+                    );
                   },
                 ),
+                ElevatedButton(
+                    onPressed: () => OneContext().hideCurrentSnackBar(),
+                    child: Text('Close SnackBar')),
                 ElevatedButton(
                   child: Text('Show Dialog'),
                   onPressed: () async {
@@ -329,25 +333,25 @@ class _MyHomePageState extends State<MyHomePage>
                         'OneContext().showModalBottomSheet<String>()');
                     var result =
                         await OneContext().showModalBottomSheet<String>(
-                            barrierColor: Colors.amber.withOpacity(0.5),
-                            builder: (context) => Container(
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: <Widget>[
-                                      ListTile(
-                                          leading: Icon(Icons.music_note),
-                                          title: Text('Music'),
-                                          onTap: () =>
-                                              OneContext().popDialog('Music')),
-                                      ListTile(
-                                          leading: Icon(Icons.videocam),
-                                          title: Text('Video'),
-                                          onTap: () =>
-                                              OneContext().popDialog('Video')),
-                                      SizedBox(height: 45)
-                                    ],
-                                  ),
-                                ));
+                      barrierColor: Colors.amber.withOpacity(0.5),
+                      builder: (context) => Container(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            ListTile(
+                                leading: Icon(Icons.music_note),
+                                title: Text('Music'),
+                                onTap: () => OneContext().popDialog('Music')),
+                            ListTile(
+                                leading: Icon(Icons.videocam),
+                                title: Text('Video'),
+                                onTap: () => OneContext().popDialog('Video')),
+                            SizedBox(height: 45)
+                          ],
+                        ),
+                      ),
+                      showDragHandle: true,
+                    );
                     print(result);
                   },
                 ),
@@ -370,7 +374,7 @@ class _MyHomePageState extends State<MyHomePage>
                             iconSize: 50,
                             color: Colors.white,
                             onPressed: () {
-                              OneContext().popBottomSheet();
+                              OneContext().popDialog();
                             }),
                       ),
                     );

@@ -8,9 +8,8 @@ mixin DialogController {
   /// Return dialog utility class `DialogController`
   DialogController get dialog => this;
 
-  /// The current context
-  BuildContext? get context => OneContext().context;
-
+  /// The current scaffold state
+  /// It is used to show snackbars, dialogs, modalBottomsheets, etc.
   GlobalKey<ScaffoldState>? _scaffoldKey;
   GlobalKey<ScaffoldState> get scaffoldKey {
     _scaffoldKey ??= GlobalKey<ScaffoldState>();
@@ -29,6 +28,7 @@ mixin DialogController {
     _dialogs.value.add(widget);
   }
 
+  /// Removes the last dialog
   void removeDialogVisible({Widget? widget}) {
     if (widget != null) {
       _dialogs.value.remove(widget);
@@ -36,6 +36,7 @@ mixin DialogController {
       _dialogs.value.removeLast();
   }
 
+  /// Pop all dialogs
   void popAllDialogs() {
     _dialogs.value.forEach((element) {
       OneContext().popDialog();
@@ -59,10 +60,11 @@ mixin DialogController {
     bool? barrierDismissible = true,
     Color? barrierColor = Colors.black54,
     bool useSafeArea = true,
+    TraversalEdgeBehavior? traversalEdgeBehavior,
   }) async {
-    if (!(await _contextLoaded())) return null;
+    if (!(await _scaffoldContextLoaded())) return null;
 
-    Widget dialog = builder(context!);
+    Widget dialog = builder(_scaffoldContext!);
     addDialogVisible(dialog);
 
     return mat
@@ -76,6 +78,7 @@ mixin DialogController {
           useSafeArea: useSafeArea,
           routeSettings: routeSettings,
           anchorPoint: anchorPoint,
+          traversalEdgeBehavior: traversalEdgeBehavior,
         )
         .whenComplete(() => removeDialogVisible(widget: dialog));
   }
@@ -85,8 +88,8 @@ mixin DialogController {
   /// The closed completer is called after the animation is complete.
   void hideCurrentSnackBar(
       {SnackBarClosedReason reason = SnackBarClosedReason.hide}) async {
-    if (!(await _contextLoaded())) return;
-    ScaffoldMessenger.of(context!).hideCurrentSnackBar(reason: reason);
+    if (!(await _scaffoldContextLoaded())) return;
+    ScaffoldMessenger.of(_scaffoldContext!).hideCurrentSnackBar(reason: reason);
   }
 
   /// Removes the current [SnackBar] (if any) immediately.
@@ -95,16 +98,17 @@ mixin DialogController {
   /// any queued snack bars, they begin their entrance animation immediately.
   void removeCurrentSnackBar(
       {SnackBarClosedReason reason = SnackBarClosedReason.hide}) async {
-    if (!(await _contextLoaded())) return;
-    ScaffoldMessenger.of(context!).removeCurrentSnackBar(reason: reason);
+    if (!(await _scaffoldContextLoaded())) return;
+    ScaffoldMessenger.of(_scaffoldContext!)
+        .removeCurrentSnackBar(reason: reason);
   }
 
   /// Shows a [SnackBar] at the bottom of the scaffold.
   Future<ScaffoldFeatureController<SnackBar, SnackBarClosedReason>?>
       showSnackBar({required SnackBar Function(BuildContext?) builder}) async {
-    if (!(await _contextLoaded())) return null;
+    if (!(await _scaffoldContextLoaded())) return null;
     return ScaffoldMessenger.of(_scaffoldContext!)
-        .showSnackBar(builder(context));
+        .showSnackBar(builder(_scaffoldContext));
   }
 
   /// Shows a modal material design bottom sheet.
@@ -126,10 +130,12 @@ mixin DialogController {
     RouteSettings? routeSettings,
     AnimationController? transitionAnimationController,
     Offset? anchorPoint,
+    bool? showDragHandle,
+    bool useSafeArea = false,
   }) async {
-    if (!(await _contextLoaded())) return null;
+    if (!(await _scaffoldContextLoaded())) return null;
 
-    Widget dialog = builder(context!);
+    Widget dialog = builder(_scaffoldContext!);
     addDialogVisible(dialog);
 
     return mat
@@ -149,6 +155,8 @@ mixin DialogController {
           routeSettings: routeSettings,
           transitionAnimationController: transitionAnimationController,
           anchorPoint: anchorPoint,
+          showDragHandle: showDragHandle,
+          useSafeArea: useSafeArea,
         )
         .whenComplete(() => removeDialogVisible(widget: dialog));
   }
@@ -166,6 +174,9 @@ mixin DialogController {
   }) async {
     if (!(await _scaffoldContextLoaded())) return null;
 
+    Widget dialog = builder(_scaffoldContext!);
+    addDialogVisible(dialog);
+
     return _scaffoldState!.showBottomSheet(
       builder,
       backgroundColor: backgroundColor,
@@ -175,30 +186,18 @@ mixin DialogController {
       constraints: constraints,
       enableDrag: enableDrag,
       transitionAnimationController: transitionAnimationController,
-    );
+    )..closed.whenComplete(() => removeDialogVisible(widget: dialog));
   }
 
   /// Pop the top-most dialog off the OneContext.dialog.
   popDialog<T extends Object>([T? result]) async {
-    if (!(await _contextLoaded())) return;
-    if (OneContext().hasDialogVisible)
-      return Navigator.of(_scaffoldContext!).pop<T>(result);
-  }
-
-  /// Pop the PersistentBottomSheet
-  popBottomSheet<T extends Object>([T? result]) async {
-    if (!(await _scaffoldContextLoaded())) return;
-    return Navigator.of(_scaffoldContext!).pop<T>(result);
-  }
-
-  Future<bool> _contextLoaded() async {
-    await Future.delayed(Duration.zero);
-    if (!OneContext.hasContext && !kReleaseMode) {
-      throw NO_CONTEXT_ERROR;
+    if ((await _scaffoldContextLoaded())) {
+      if (OneContext().hasDialogVisible)
+        return Navigator.of(_scaffoldContext!).pop<T>(result);
     }
-    return OneContext.hasContext;
   }
 
+  /// Context used by inner Navigator
   Future<bool> _scaffoldContextLoaded() async {
     await Future.delayed(Duration.zero);
     final contextIsNull = _scaffoldContext == null;
