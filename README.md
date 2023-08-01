@@ -130,6 +130,11 @@ OneContext().pop();
 ```
 
 ```dart
+// Pop dialogs
+OneContext().popDialog();
+```
+
+```dart
 // Retrieve data from route when it's pops
 String result = await OneContext().push<String>(MaterialPageRoute(builder: (_) => SecondPage()));
 print(result);

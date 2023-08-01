@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart' as mat;
 import 'package:one_context/src/controllers/one_context.dart';
@@ -200,10 +199,13 @@ mixin DialogController {
   /// Context used by inner Navigator
   Future<bool> _scaffoldContextLoaded() async {
     await Future.delayed(Duration.zero);
-    final contextIsNull = _scaffoldContext == null;
-    if (contextIsNull && !kReleaseMode) {
+    final isContextNull = _scaffoldContext == null;
+    final isMounted = _scaffoldContext?.mounted ?? false;
+
+    if ((isContextNull || !isMounted)) {
       throw NO_CONTEXT_ERROR;
     }
-    return !contextIsNull;
+
+    return !isContextNull;
   }
 }

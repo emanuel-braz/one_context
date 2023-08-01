@@ -79,6 +79,7 @@ class MyApp extends StatelessWidget {
                       builder: (context) {
                         return SecondPage();
                       },
+                      settings: settings,
                     );
                   } else
                     return null;
@@ -630,7 +631,7 @@ class SecondPage extends StatelessWidget {
           ElevatedButton(
             child: Text('Go Back - pop("success")'),
             onPressed: () {
-              // showTipsOnScreen('OneContext().pop("success")');
+              showTipsOnScreen('OneContext().pop("success")');
               OneContext().pop('success');
             },
           ),

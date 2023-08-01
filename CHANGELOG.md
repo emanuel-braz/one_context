@@ -1,3 +1,6 @@
+## [3.0.0] - Jul 30, 2023
+* Update dialogs parameters
+
 ## [2.1.0] - Jul 30, 2022
 * Update dialogs parameters
 
