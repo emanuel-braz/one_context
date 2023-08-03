@@ -360,7 +360,7 @@ e.g.
 
 
 ## 🚦  Warnings
-\* OneContex().theme and OneContex().mediaQuery are global instances of the root of the widget tree. Use it with care! It can reproduce unexpected behavior if you don't understand it.
+\* OneContext().theme and OneContext().mediaQuery are global instances of the root of the widget tree. Use it with care! It can reproduce unexpected behavior if you don't understand it.
 
 \* OneContext().context is like a root context, so, it should not be used directly, as it can reproduce unexpected behaviors, unless you have a understanding how it works. It shouldn't work well with InheritedWidget for example.
 
