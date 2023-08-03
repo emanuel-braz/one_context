@@ -413,6 +413,9 @@ class _MyHomePageState extends State<MyHomePage>
                         case 2:
                           print('number two');
                           break;
+                        default:
+                          print('android back button');
+                          break;
                       }
                     }),
                 ElevatedButton(
