@@ -140,7 +140,7 @@ mixin DialogController {
     return mat
         .showModalBottomSheet<T>(
           context: _scaffoldContext!,
-          builder: builder,
+          builder: (_) => dialog,
           backgroundColor: backgroundColor,
           clipBehavior: clipBehavior,
           elevation: elevation,
@@ -177,7 +177,7 @@ mixin DialogController {
     addDialogVisible(dialog);
 
     return _scaffoldState!.showBottomSheet(
-      builder,
+      (_) => dialog,
       backgroundColor: backgroundColor,
       elevation: elevation,
       shape: shape,

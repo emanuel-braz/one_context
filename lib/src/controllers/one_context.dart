@@ -74,8 +74,6 @@ class OneContext with NavigatorController, OverlayController, DialogController {
     Key? key,
     MediaQueryData? mediaQueryData,
     String? initialRoute,
-    Route<dynamic> Function(RouteSettings)? onGenerateRoute,
-    Route<dynamic> Function(RouteSettings)? onUnknownRoute,
     List<NavigatorObserver> observers = const <NavigatorObserver>[],
   }) =>
       OneContextWidget(

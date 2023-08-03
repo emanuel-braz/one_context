@@ -45,9 +45,8 @@ class MyApp extends StatelessWidget {
             stopBubbling: true,
             builder: (context, data) {
               return MaterialApp(
-                // TODO: check observers
-                // navigatorObservers: [OneContext().heroController],
                 debugShowCheckedModeBanner: debugShowCheckedModeBanner,
+
                 // Configure reactive theme mode and theme data (needs OneNotification above in the widget tree)
                 themeMode: OneThemeController.initThemeMode(ThemeMode.light),
                 theme: OneThemeController.initThemeData(ThemeData(
@@ -613,7 +612,7 @@ class SecondPage extends StatelessWidget {
                         child: Text('Close'),
                         onPressed: () {
                           OneContext().popDialog("Nice!");
-                        })
+                        }),
                   ],
                 ))
         .then((result) => print(result));
