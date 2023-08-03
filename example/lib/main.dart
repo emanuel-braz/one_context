@@ -60,7 +60,7 @@ class MyApp extends StatelessWidget {
                     brightness: Brightness.dark, primaryColor: Colors.blue)),
 
                 // Configure Navigator key
-                navigatorKey: OneContext().navigatorKey,
+                navigatorKey: OneContext().key,
 
                 // Configure [OneContext] to dialogs, overlays, snackbars, and ThemeMode
                 builder: OneContext().builder,
@@ -94,7 +94,7 @@ class MyApp extends StatelessWidget {
 class MyApp2 extends StatelessWidget {
   MyApp2() {
     print('MyApp2 loaded!');
-    OneContext().navigatorKey = GlobalKey<NavigatorState>();
+    OneContext().key = GlobalKey<NavigatorState>();
   }
 
   @override
@@ -105,7 +105,7 @@ class MyApp2 extends StatelessWidget {
         home: MyHomePage2(title: 'A NEW APPLICATION'),
         routes: {'/second': (context) => SecondPage()},
         builder: OneContext().builder,
-        navigatorKey: OneContext().navigatorKey);
+        navigatorKey: OneContext().key);
   }
 }
 
@@ -134,7 +134,7 @@ class _MyHomePage2State extends State<MyHomePage2> {
                 onPressed: () {
                   OnePlatform.reboot(
                     setUp: () {
-                      OneContext().navigatorKey = GlobalKey<NavigatorState>();
+                      OneContext().key = GlobalKey<NavigatorState>();
                     },
                     builder: () => MyApp(),
                   );
@@ -241,8 +241,7 @@ class _MyHomePageState extends State<MyHomePage>
                   onPressed: () {
                     OnePlatform.reboot(
                         setUp: () {
-                          OneContext().navigatorKey =
-                              GlobalKey<NavigatorState>();
+                          OneContext().key = GlobalKey<NavigatorState>();
                         },
                         builder: () => MyApp2());
                   },

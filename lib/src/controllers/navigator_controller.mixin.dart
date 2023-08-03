@@ -34,13 +34,13 @@ mixin NavigatorController {
   ///     builder: () => MyApp()
   /// );
   /// ```
-  GlobalKey<NavigatorState> get navigatorKey {
+  GlobalKey<NavigatorState> get key {
     _navKey ??= GlobalKey<NavigatorState>();
     OneContext().context = _navKey!.currentContext;
     return _navKey!;
   }
 
-  set navigatorKey(newKey) => _navKey = newKey;
+  set key(newKey) => _navKey = newKey;
 
   NavigatorState? get _nav {
     assert(
@@ -48,7 +48,7 @@ mixin NavigatorController {
         'Navigator key not found! MaterialApp.navigatorKey is null or not set correctly.'
         '\n\nYou need to use OneContext().navigator.key to be able to navigate! e.g. ->'
         '\n\nMaterialApp(\n    navigatorKey: OneContext().navigator.key\n    ...\n)');
-    return navigatorKey.currentState;
+    return key.currentState;
   }
 
   /// Push a named route onto the navigator that most tightly encloses the given

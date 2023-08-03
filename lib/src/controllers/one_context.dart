@@ -12,7 +12,7 @@ class OneContext with NavigatorController, OverlayController, DialogController {
   /// The almost top root context of the app,
   /// use it carefully or don't use it directly!
   BuildContext? get context {
-    _context = navigatorKey.currentContext;
+    _context = key.currentContext;
     assert(_context != null, NO_CONTEXT_ERROR);
     return _context;
   }
