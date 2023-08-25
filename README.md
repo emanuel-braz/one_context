@@ -20,6 +20,17 @@
 
 ## 🎮  Let's start 
 
+## ⚠  Important: Configure MaterialApp. e.g.
+```dart
+/// important: Use [OneContext().builder] in `MaterialApp` builder, in order to show dialogs and overlays.
+/// important: Use [OneContext().key] in `MaterialApp` navigatorKey, in order to navigate.
+return MaterialApp(
+    builder: OneContext().builder,
+    navigatorKey: OneContext().key,
+    ...
+);
+```
+
 #### There are 2 ways to get OneContext singleton instance, OneContext() or OnceContext.intance. e.g.
 ```dart
     OneContext().pushNamed('/detail_page');
@@ -127,6 +138,11 @@ OneContext().push(MaterialPageRoute(builder: (_) => SecondPage()));
 ```dart
 // go back from second page
 OneContext().pop();
+```
+
+```dart
+// Pop dialogs
+OneContext().popDialog();
 ```
 
 ```dart
@@ -326,17 +342,6 @@ e.g.
     );
   }
 
-```
-
-## ⚠  Important: Configure MaterialApp. e.g.
-```dart
-/// important: Use [OneContext().builder] in `MaterialApp` builder, in order to show dialogs and overlays.
-/// important: Use [OneContext().key] in `MaterialApp` navigatorKey, in order to navigate.
-return MaterialApp(
-    builder: OneContext().builder,
-    navigatorKey: OneContext().key,
-    ...
-);
 ```
 
 ### In initState or inside class constructor (now it's possible)

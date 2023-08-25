@@ -1,3 +1,7 @@
+## [3.0.0-rc-1] - August 02, 2023
+* Update dialogs parameters
+* Update dart version 3.0.0
+
 ## [2.1.0] - Jul 30, 2022
 * Update dialogs parameters
 

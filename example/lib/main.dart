@@ -6,18 +6,16 @@ import 'package:one_context/one_context.dart';
 bool debugShowCheckedModeBanner = false;
 const localeEnglish = [Locale('en', '')];
 
-void main() => OnePlatform.app = () => MyApp();
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  OnePlatform.app = () => MyApp();
+}
 
 class MyApp extends StatelessWidget {
   MyApp() {
     print('MyApp loaded!');
 
     debugShowCheckedModeBanner = true;
-
-    // Reseting light theme
-    if (OneContext.hasContext)
-      OneContext().oneTheme.changeThemeData(
-          ThemeData(primarySwatch: Colors.green, brightness: Brightness.light));
   }
 
   @override
@@ -47,27 +45,27 @@ class MyApp extends StatelessWidget {
             stopBubbling: true,
             builder: (context, data) {
               return MaterialApp(
-                navigatorObservers: [OneContext().heroController],
                 debugShowCheckedModeBanner: debugShowCheckedModeBanner,
+
                 // Configure reactive theme mode and theme data (needs OneNotification above in the widget tree)
                 themeMode: OneThemeController.initThemeMode(ThemeMode.light),
                 theme: OneThemeController.initThemeData(ThemeData(
-                    primarySwatch: Colors.green,
-                    primaryColor: Colors.green,
-                    brightness: Brightness.light)),
+                  primarySwatch: Colors.green,
+                  primaryColor: Colors.green,
+                  brightness: Brightness.light,
+                  useMaterial3: true,
+                )),
                 darkTheme: OneThemeController.initDarkThemeData(ThemeData(
                     brightness: Brightness.dark, primaryColor: Colors.blue)),
 
+                // Configure Navigator key
+                navigatorKey: OneContext().key,
+
                 // Configure [OneContext] to dialogs, overlays, snackbars, and ThemeMode
                 builder: OneContext().builder,
-                // builder: (context, widget) => OneContext().builder(context, widget, mediaQueryData: MediaQuery.of(context).copyWith(textScaleFactor: 1.0)),
-
-                // Set navigator key in order to navigate
-                navigatorKey: OneContext().key,
 
                 // [data] it comes through events
                 supportedLocales: dataLocale ?? [const Locale('en', '')],
-                // supportedLocales: dataLocale ?? [const Locale('en', '')],
 
                 title: 'OneContext Demo',
                 home: MyHomePage(
@@ -80,6 +78,7 @@ class MyApp extends StatelessWidget {
                       builder: (context) {
                         return SecondPage();
                       },
+                      settings: settings,
                     );
                   } else
                     return null;
@@ -284,20 +283,24 @@ class _MyHomePageState extends State<MyHomePage>
                     OneContext()
                         .hideCurrentSnackBar(); // Dismiss snackbar before show another ;)
                     OneContext().showSnackBar(
-                        builder: (context) => SnackBar(
-                              content: Text(
-                                'My awesome snackBar!',
-                                textAlign: TextAlign.center,
-                                style: Theme.of(context!)
-                                    .textTheme
-                                    .headline6
-                                    ?.copyWith(color: Colors.white),
-                              ),
-                              action: SnackBarAction(
-                                  label: 'DISMISS', onPressed: () {}),
-                            ));
+                      builder: (context) => SnackBar(
+                        content: Text(
+                          'My awesome snackBar!',
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context!)
+                              .textTheme
+                              .headlineMedium
+                              ?.copyWith(color: Colors.white),
+                        ),
+                        action:
+                            SnackBarAction(label: 'DISMISS', onPressed: () {}),
+                      ),
+                    );
                   },
                 ),
+                ElevatedButton(
+                    onPressed: () => OneContext().hideCurrentSnackBar(),
+                    child: Text('Close SnackBar')),
                 ElevatedButton(
                   child: Text('Show Dialog'),
                   onPressed: () async {
@@ -322,22 +325,6 @@ class _MyHomePageState extends State<MyHomePage>
                     print(result);
                   },
                 ),
-                // ElevatedButton(
-                //   child: Text('Show DatePicker'),
-                //   onPressed: () async {
-                //     showTipsOnScreen('OneContext().showDatePicker()');
-                //     DateTime selectedDate = DateTime.now();
-                //     OneContext()
-                //         .showDatePicker(
-                //             initialDate: selectedDate,
-                //             firstDate: DateTime(2015, 8),
-                //             lastDate: DateTime(2101))
-                //         .then((picked) => {
-                //               if (picked != null && picked != selectedDate)
-                //                 print(picked)
-                //             });
-                //   },
-                // ),
                 ElevatedButton(
                   child: Text('Show modalBottomSheet'),
                   onPressed: () async {
@@ -345,25 +332,25 @@ class _MyHomePageState extends State<MyHomePage>
                         'OneContext().showModalBottomSheet<String>()');
                     var result =
                         await OneContext().showModalBottomSheet<String>(
-                            barrierColor: Colors.amber.withOpacity(0.5),
-                            builder: (context) => Container(
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: <Widget>[
-                                      ListTile(
-                                          leading: Icon(Icons.music_note),
-                                          title: Text('Music'),
-                                          onTap: () =>
-                                              OneContext().popDialog('Music')),
-                                      ListTile(
-                                          leading: Icon(Icons.videocam),
-                                          title: Text('Video'),
-                                          onTap: () =>
-                                              OneContext().popDialog('Video')),
-                                      SizedBox(height: 45)
-                                    ],
-                                  ),
-                                ));
+                      barrierColor: Colors.amber.withOpacity(0.5),
+                      builder: (context) => Container(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            ListTile(
+                                leading: Icon(Icons.music_note),
+                                title: Text('Music'),
+                                onTap: () => OneContext().popDialog('Music')),
+                            ListTile(
+                                leading: Icon(Icons.videocam),
+                                title: Text('Video'),
+                                onTap: () => OneContext().popDialog('Video')),
+                            SizedBox(height: 45)
+                          ],
+                        ),
+                      ),
+                      showDragHandle: true,
+                    );
                     print(result);
                   },
                 ),
@@ -385,7 +372,9 @@ class _MyHomePageState extends State<MyHomePage>
                             icon: Icon(Icons.arrow_drop_down),
                             iconSize: 50,
                             color: Colors.white,
-                            onPressed: () => OneContext().popDialog()),
+                            onPressed: () {
+                              OneContext().popDialog();
+                            }),
                       ),
                     );
                   },
@@ -423,6 +412,9 @@ class _MyHomePageState extends State<MyHomePage>
                           break;
                         case 2:
                           print('number two');
+                          break;
+                        default:
+                          print('android back button');
                           break;
                       }
                     }),
@@ -592,7 +584,7 @@ class _MyHomePageState extends State<MyHomePage>
                     String info = 'platform: ${theme.platform}\n'
                         'primaryColor: ${theme.primaryColor}\n'
                         'accentColor: ${theme.colorScheme.secondary}\n'
-                        'title.color: ${theme.textTheme.headline6?.color}';
+                        'title.color: ${theme.textTheme.headlineMedium?.color}';
                     print(info);
                     showTipsOnScreen(info, size: 200, seconds: 5);
                   },
@@ -623,7 +615,7 @@ class SecondPage extends StatelessWidget {
                         child: Text('Close'),
                         onPressed: () {
                           OneContext().popDialog("Nice!");
-                        })
+                        }),
                   ],
                 ))
         .then((result) => print(result));
@@ -640,7 +632,7 @@ class SecondPage extends StatelessWidget {
           ElevatedButton(
             child: Text('Go Back - pop("success")'),
             onPressed: () {
-              // showTipsOnScreen('OneContext().pop("success")');
+              showTipsOnScreen('OneContext().pop("success")');
               OneContext().pop('success');
             },
           ),
