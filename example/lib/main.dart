@@ -313,6 +313,14 @@ class _MyHomePageState extends State<MyHomePage>
                               content: new Text("The Body"),
                               actions: <Widget>[
                                 new TextButton(
+                                    child: new Text("Push"),
+                                    onPressed: () async {
+                                      String? result = await OneContext()
+                                          .push<String>(MaterialPageRoute(
+                                              builder: (_) => SecondPage()));
+                                      print('$result from OneContext().push()');
+                                    }),
+                                new TextButton(
                                     child: new Text("OK"),
                                     onPressed: () =>
                                         OneContext().popDialog('ok')),
@@ -547,7 +555,7 @@ class _MyHomePageState extends State<MyHomePage>
                   child: Text('Push a second page (push)'),
                   onPressed: () async {
                     showTipsOnScreen('OneContext().push()');
-                    String? result = await OneContext().push<String>(
+                    String? result = await Navigator.push<String>(context,
                         MaterialPageRoute(builder: (_) => SecondPage()));
                     print('$result from OneContext().push()');
                   },
@@ -572,7 +580,7 @@ class _MyHomePageState extends State<MyHomePage>
                         'platformBrightness: ${mediaQuery.platformBrightness.toString()}\n'
                         'width: ${mediaQuery.size.width}\n'
                         'height: ${mediaQuery.size.height}\n'
-                        'textScaleFactor: ${mediaQuery.textScaleFactor}';
+                        'textScaleFactor: ${mediaQuery.textScaler}';
                     print(info);
                     showTipsOnScreen(info, size: 200, seconds: 5);
                   },
@@ -601,25 +609,6 @@ class _MyHomePageState extends State<MyHomePage>
 
 class SecondPage extends StatelessWidget {
   static String routeName = "/second";
-  SecondPage() {
-    OneContext()
-        .showDialog(
-            builder: (_) => AlertDialog(
-                  content: Text(
-                      'Dialog opened from constructor of StatelessWidget SecondPage!'),
-                  actions: [
-                    ElevatedButton(
-                        style: ButtonStyle(
-                            backgroundColor:
-                                MaterialStateProperty.all(Colors.blue)),
-                        child: Text('Close'),
-                        onPressed: () {
-                          OneContext().popDialog("Nice!");
-                        }),
-                  ],
-                ))
-        .then((result) => print(result));
-  }
 
   @override
   Widget build(BuildContext context) => Scaffold(
