@@ -365,3 +365,6 @@ return MaterialApp(
 ## 👨‍💻👨‍💻  Contributing
 
 #### Contributions of any kind are welcome! I'll be glad to analyse and accept them! 👾
+### Sponsor
+<a href="https://www.buymeacoffee.com/emanuelbraz" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-blue.png" alt="Buy Me A Coffee" style="height: 50px !important;width: 217px !important;" ></a>
+
