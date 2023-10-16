@@ -313,6 +313,15 @@ class _MyHomePageState extends State<MyHomePage>
                               content: new Text("The Body"),
                               actions: <Widget>[
                                 new TextButton(
+                                    child: new Text("Push new page"),
+                                    onPressed: () async {
+                                      Navigator.of(context).pop();
+                                      String? result = await OneContext()
+                                          .push<String>(MaterialPageRoute(
+                                              builder: (_) => SecondPage()));
+                                      print('$result from OneContext().push()');
+                                    }),
+                                new TextButton(
                                     child: new Text("OK"),
                                     onPressed: () =>
                                         OneContext().popDialog('ok')),
@@ -547,7 +556,7 @@ class _MyHomePageState extends State<MyHomePage>
                   child: Text('Push a second page (push)'),
                   onPressed: () async {
                     showTipsOnScreen('OneContext().push()');
-                    String? result = await OneContext().push<String>(
+                    String? result = await Navigator.push<String>(context,
                         MaterialPageRoute(builder: (_) => SecondPage()));
                     print('$result from OneContext().push()');
                   },
@@ -601,6 +610,7 @@ class _MyHomePageState extends State<MyHomePage>
 
 class SecondPage extends StatelessWidget {
   static String routeName = "/second";
+
   SecondPage() {
     OneContext()
         .showDialog(

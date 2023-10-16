@@ -11,7 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
   shared_preferences: ^2.2.0
-  back_button_interceptor: ^6.0.2
+  back_button_interceptor: ^7.0.0
 
 dev_dependencies:
   flutter_test:
