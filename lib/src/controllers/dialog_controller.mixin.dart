@@ -67,7 +67,7 @@ mixin DialogController {
   ScaffoldFeatureController<SnackBar, SnackBarClosedReason> Function(
       SnackBar Function(BuildContext?) builder)? _showSnackBar;
 
-  PersistentBottomSheetController<T> Function<T>({
+  PersistentBottomSheetController Function<T>({
     Widget Function(BuildContext) builder,
     Color? backgroundColor,
     double? elevation,
@@ -186,7 +186,7 @@ mixin DialogController {
   ///
   /// Returns a controller that can be used to close and otherwise manipulate the
   /// bottom sheet.
-  Future<PersistentBottomSheetController<T>?> showBottomSheet<T>({
+  Future<PersistentBottomSheetController?> showBottomSheet<T>({
     required Widget Function(BuildContext) builder,
     Color? backgroundColor,
     double? elevation,
@@ -242,7 +242,7 @@ mixin DialogController {
       ScaffoldFeatureController<SnackBar, SnackBarClosedReason> Function(
               SnackBar Function(BuildContext?) builder)?
           showSnackBar,
-      PersistentBottomSheetController<T> Function<T>({
+      PersistentBottomSheetController Function<T>({
         Widget Function(BuildContext)? builder,
         Color? backgroundColor,
         double? elevation,

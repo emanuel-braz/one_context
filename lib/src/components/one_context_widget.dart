@@ -109,7 +109,7 @@ class _OneContextWidgetState extends State<OneContextWidget> {
     );
   }
 
-  PersistentBottomSheetController<T> _showBottomSheet<T>({
+  PersistentBottomSheetController _showBottomSheet<T>({
     Widget Function(BuildContext)? builder,
     Color? backgroundColor,
     double? elevation,
@@ -119,7 +119,7 @@ class _OneContextWidgetState extends State<OneContextWidget> {
     bool? enableDrag,
     AnimationController? transitionAnimationController,
   }) {
-    return showBottomSheet<T>(
+    return showBottomSheet(
       context: OneContext().context!,
       builder: builder!,
       backgroundColor: backgroundColor,
