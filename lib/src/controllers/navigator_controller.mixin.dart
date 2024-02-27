@@ -1,12 +1,12 @@
-import 'package:one_context/src/controllers/one_context.dart';
 import 'package:flutter/material.dart';
+import 'package:one_context/src/controllers/one_context.dart';
 
 mixin NavigatorController {
   /// Return navigator utility class `NavigatorController`
   NavigatorController get navigator => this;
   BuildContext? get context => OneContext().context;
 
-  GlobalKey<NavigatorState>? _key;
+  GlobalKey<NavigatorState>? _navKey;
 
   /// Get the global key `GlobalKey<NavigatorState>()`
   ///
@@ -34,12 +34,17 @@ mixin NavigatorController {
   ///     builder: () => MyApp()
   /// );
   /// ```
-  GlobalKey<NavigatorState> get key => _key ??= GlobalKey<NavigatorState>();
-  set key(newKey) => _key = newKey;
+  GlobalKey<NavigatorState> get key {
+    _navKey ??= GlobalKey<NavigatorState>();
+    OneContext().context = _navKey!.currentContext;
+    return _navKey!;
+  }
+
+  set key(newKey) => _navKey = newKey;
 
   NavigatorState? get _nav {
     assert(
-        _key != null,
+        _navKey != null,
         'Navigator key not found! MaterialApp.navigatorKey is null or not set correctly.'
         '\n\nYou need to use OneContext().navigator.key to be able to navigate! e.g. ->'
         '\n\nMaterialApp(\n    navigatorKey: OneContext().navigator.key\n    ...\n)');
@@ -56,6 +61,15 @@ mixin NavigatorController {
 
   ///  Push the given route onto the navigator.
   Future<T?> push<T extends Object?>(Route<T> route) => _nav!.push<T>(route);
+
+  ///  Show general dialog.
+  Future<T?> showGeneralDialog<T extends Object?>(Widget page) =>
+      _nav!.push<T>(DialogRoute(
+        context: context!,
+        builder: (BuildContext context) {
+          return page;
+        },
+      ));
 
   /// Whether the navigator can be popped.
   bool canPop() => _nav!.canPop();

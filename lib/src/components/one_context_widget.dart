@@ -4,7 +4,17 @@ import 'package:one_context/src/controllers/one_context.dart';
 
 class OneContextWidget extends StatefulWidget {
   final Widget? child;
-  OneContextWidget({Key? key, this.child}) : super(key: key);
+  final MediaQueryData? mediaQueryData;
+  final String? initialRoute;
+  final List<NavigatorObserver> observers;
+
+  OneContextWidget({
+    Key? key,
+    this.child,
+    this.mediaQueryData,
+    this.initialRoute,
+    this.observers = const <NavigatorObserver>[],
+  }) : super(key: key);
   _OneContextWidgetState createState() => _OneContextWidgetState();
 }
 
@@ -12,11 +22,6 @@ class _OneContextWidgetState extends State<OneContextWidget> {
   @override
   void initState() {
     super.initState();
-    OneContext().registerDialogCallback(
-        showDialog: _showDialog,
-        showSnackBar: _showSnackBar,
-        showModalBottomSheet: _showModalBottomSheet,
-        showBottomSheet: _showBottomSheet);
     BackButtonInterceptor.add(myInterceptor);
   }
 
@@ -36,99 +41,15 @@ class _OneContextWidgetState extends State<OneContextWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Builder(
-        builder: (innerContext) {
-          OneContext().context = innerContext;
-          return widget.child!;
-        },
-      ),
-    );
-  }
-
-  Future<T?> _showDialog<T>({
-    required Widget Function(BuildContext) builder,
-    bool? barrierDismissible = true,
-    bool useRootNavigator = true,
-    Color? barrierColor = Colors.black54,
-    String? barrierLabel,
-    bool useSafeArea = true,
-    RouteSettings? routeSettings,
-    Offset? anchorPoint,
-  }) =>
-      showDialog<T?>(
-        context: context,
-        builder: (context) => builder(context),
-        barrierDismissible: barrierDismissible!,
-        useRootNavigator: useRootNavigator,
-        barrierColor: barrierColor,
-        barrierLabel: barrierLabel,
-        useSafeArea: useSafeArea,
-        routeSettings: routeSettings,
-        anchorPoint: anchorPoint,
-      );
-
-  ScaffoldFeatureController<SnackBar, SnackBarClosedReason> _showSnackBar(
-          SnackBar Function(BuildContext?) builder) =>
-      ScaffoldMessenger.of(OneContext().context!)
-          .showSnackBar(builder(OneContext().context));
-
-  Future<T?> _showModalBottomSheet<T>({
-    required Widget Function(BuildContext) builder,
-    Color? backgroundColor,
-    double? elevation,
-    ShapeBorder? shape,
-    Clip? clipBehavior,
-    bool? isScrollControlled = false,
-    bool? useRootNavigator = false,
-    bool? isDismissible = true,
-    BoxConstraints? constraints,
-    Color? barrierColor,
-    bool? enableDrag,
-    RouteSettings? routeSettings,
-    AnimationController? transitionAnimationController,
-    Offset? anchorPoint,
-  }) {
-    return showModalBottomSheet<T>(
-      context: context,
-      builder: builder,
-      backgroundColor: backgroundColor,
-      clipBehavior: clipBehavior,
-      elevation: elevation,
-      isDismissible: isDismissible!,
-      isScrollControlled: isScrollControlled!,
-      shape: shape,
-      useRootNavigator: useRootNavigator!,
-      constraints: constraints,
-      barrierColor: barrierColor,
-      enableDrag: enableDrag ?? true,
-      routeSettings: routeSettings,
-      transitionAnimationController: transitionAnimationController,
-      anchorPoint: anchorPoint,
-    );
-  }
-
-  PersistentBottomSheetController<T> _showBottomSheet<T>({
-    Widget Function(BuildContext)? builder,
-    Color? backgroundColor,
-    double? elevation,
-    ShapeBorder? shape,
-    Clip? clipBehavior,
-    BoxConstraints? constraints,
-    bool? enableDrag,
-    AnimationController? transitionAnimationController,
-  }) {
-    return showBottomSheet<T>(
-      context: OneContext().context!,
-      builder: builder!,
-      backgroundColor: backgroundColor,
-      elevation: elevation,
-      shape: shape,
-      clipBehavior: clipBehavior,
-      constraints: constraints,
-      enableDrag: enableDrag ?? true,
-      transitionAnimationController: transitionAnimationController,
+    return Navigator(
+      initialRoute: widget.initialRoute ?? '/',
+      observers: [...widget.observers, OneContext().heroController],
+      onGenerateRoute: (_) => MaterialPageRoute(
+          builder: (context) => Scaffold(
+                resizeToAvoidBottomInset: false,
+                key: OneContext().scaffoldKey,
+                body: widget.child!,
+              )),
     );
   }
 }

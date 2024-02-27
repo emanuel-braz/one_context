@@ -1,20 +1,21 @@
 name: one_context
 description: OneContext provides a simple way to deal with Dialogs, Overlays, Navigations, Theme* and MediaQuery* with no need of BuildContext.
-version: 2.1.0
+version: 3.0.0-rc-1
 homepage: https://github.com/emanuel-braz/one_context
 repository: https://github.com/emanuel-braz/one_context.git
 
 environment:
-  sdk: '>=2.17.0 <3.0.0'
+  sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  shared_preferences: ^2.0.4
-  back_button_interceptor: ^6.0.0
+  shared_preferences: ^2.2.0
+  back_button_interceptor: ^7.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  pana: ^0.21.35
     
 flutter:
