@@ -74,8 +74,18 @@ mixin NavigatorController {
   /// Whether the navigator can be popped.
   bool canPop() => _nav!.canPop();
 
-  /// Tries to pop the current route, while honoring the route's [Route.willPop]
-  /// state.
+  /// Consults the current route's [Route.popDisposition] method, and acts
+  /// accordingly, potentially popping the route as a result; returns whether
+  /// the pop request should be considered handled.
+  ///
+  /// {@macro flutter.widgets.navigator.maybePop}
+  ///
+  /// See also:
+  ///
+  ///  * [Form], which provides a [Form.canPop] boolean that enables the
+  ///    form to prevent any [pop]s initiated by the app's back button.
+  ///  * [ModalRoute], which provides a `scopedOnPopCallback` that can be used
+  ///    to define the route's `willPop` method.
   Future<bool> maybePop<T extends Object?>([T? result]) async =>
       _nav!.maybePop<T>(result);
 
