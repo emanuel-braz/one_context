@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/material.dart' as mat;
+import 'package:flutter/material.dart';
 import 'package:one_context/src/controllers/one_context.dart';
 
 typedef Widget DialogBuilder(BuildContext context);
@@ -161,7 +161,7 @@ mixin DialogController {
   }
 
   /// Shows a persistent bottom sheet
-  Future<PersistentBottomSheetController<T>?> showBottomSheet<T>({
+  Future<PersistentBottomSheetController?> showBottomSheet<T>({
     required Widget Function(BuildContext) builder,
     Color? backgroundColor,
     double? elevation,
