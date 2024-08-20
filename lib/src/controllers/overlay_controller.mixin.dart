@@ -126,11 +126,13 @@ mixin OverlayController {
                 ),
                 builder != null
                     ? builder(context)
-                    : Center(
-                        child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                            circularProgressIndicatorColor ?? Colors.white),
-                      ))
+                    : OneContext().progressIndicatorBuilder != null
+                        ? OneContext().progressIndicatorBuilder!(context)
+                        : Center(
+                            child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                                circularProgressIndicatorColor ?? Colors.white),
+                          ))
               ],
             ));
   }
