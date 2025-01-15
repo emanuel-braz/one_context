@@ -21,6 +21,8 @@ class OneContext with NavigatorController, OverlayController, DialogController {
 
   set context(BuildContext? newContext) => _context = newContext;
 
+  Widget Function(BuildContext? context)? progressIndicatorBuilder;
+
   /// If you need reactive changes, do not use OneContext().mediaQuery
   /// Use `MediaQuery.of(context)` instead.
   MediaQueryData get mediaQuery => MediaQuery.of(context!);
