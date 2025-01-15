@@ -1,3 +1,7 @@
+## [4.1.0] - Jan 14, 2025
+- Fix error when using restorationScopeId
+  - In order to load theme, it should be initialized manually [loadThemeMode()]
+
 ## [4.0.0] - Feb 27, 2023
 - Update Flutter 3.19.1
 
