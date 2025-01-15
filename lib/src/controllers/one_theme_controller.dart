@@ -20,10 +20,6 @@ typedef OneAppBuilder = Widget Function<T>(BuildContext context, T data);
 /// Important: configure `MaterialApp.builder: OneContext().builder,`
 /// and add `OneNotificationBuilder` as parent of MaterialApp.
 class OneThemeController {
-  OneThemeController() {
-    loadThemeMode();
-  }
-
   static const String _themeModeKey = 'themeModeKey';
   OneThemeController get oneTheme => this;
   BuildContext? get context => OneContext().context;
